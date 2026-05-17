@@ -256,6 +256,15 @@ select option {
   animation: live-ring 2s ease-out infinite;
 }
 
+@keyframes live-badge-pulse {
+  0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(16, 185, 129, 0.7); }
+  50%       { opacity: 0.55; text-shadow: 0 0 4px rgba(16, 185, 129, 0.3); }
+}
+
+.live-badge {
+  animation: live-badge-pulse 2s ease-in-out infinite;
+}
+
 /* ── Table rows ──────────────────────────────────────────────────────────────── */
 .data-row {
   border-bottom: 1px solid rgba(0, 212, 255, 0.05);
