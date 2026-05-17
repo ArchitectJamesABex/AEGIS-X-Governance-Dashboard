@@ -265,6 +265,18 @@ select option {
   animation: live-badge-pulse 2s ease-in-out infinite;
 }
 
+/* ── Live telemetry chart dot ────────────────────────────────────────────────── */
+@keyframes chart-ring-pulse {
+  0%   { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 0;   transform: scale(3); }
+}
+
+.chart-dot-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: chart-ring-pulse 2s ease-out infinite;
+}
+
 /* ── Table rows ──────────────────────────────────────────────────────────────── */
 .data-row {
   border-bottom: 1px solid rgba(0, 212, 255, 0.05);

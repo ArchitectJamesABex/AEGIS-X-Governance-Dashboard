@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { PieChart, Pie, Cell, Tooltip } from 'recharts'
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell,
-} from 'recharts'
-import {
-  complianceFrameworks, complianceTrend,
-  riskDistribution, risks, models, auditLog,
+  complianceFrameworks, riskDistribution, risks, models, auditLog,
 } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
 import { exportOverviewPDF } from '../utils/exportUtils'
@@ -80,37 +76,24 @@ function OrbitalRing({ score }) {
           style={{ transition: 'stroke 1.2s ease' }} />
         <circle cx={cx} cy={cy} r="96" fill="none" stroke={color} strokeWidth="0.3" opacity="0.08"
           style={{ transition: 'stroke 1.2s ease' }} />
-
         <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="13" />
-
         <circle
           cx={cx} cy={cy} r={r}
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeLinecap="round"
+          fill="none" stroke={color} strokeWidth="10" strokeLinecap="round"
           strokeDasharray={`${filled} ${circumference - filled}`}
           transform={`rotate(-90, ${cx}, ${cy})`}
           filter="url(#ringGlow)"
           style={{ transition: 'stroke-dasharray 0.7s ease, stroke 1.2s ease' }}
         />
-
-        <text
-          x={cx} y={cy - 10}
-          textAnchor="middle"
-          fill="#f0f4ff"
-          fontSize="44"
-          fontWeight="700"
-          className="score-pulse"
-          style={{ fontFamily: 'system-ui' }}
-        >
+        <text x={cx} y={cy - 10} textAnchor="middle" fill="#f0f4ff" fontSize="44" fontWeight="700"
+          className="score-pulse" style={{ fontFamily: 'system-ui' }}>
           {score}
         </text>
         <text x={cx} y={cy + 8} textAnchor="middle" fill="rgba(136,153,187,0.7)" fontSize="9" letterSpacing="0.5">
           / 100
         </text>
-        <text x={cx} y={cy + 24} textAnchor="middle" fill={color} fontSize="8.5" letterSpacing="2.5" fontWeight="600"
-          style={{ transition: 'fill 1.2s ease' }}>
+        <text x={cx} y={cy + 24} textAnchor="middle" fill={color} fontSize="8.5" letterSpacing="2.5"
+          fontWeight="600" style={{ transition: 'fill 1.2s ease' }}>
           {grade}
         </text>
       </svg>
@@ -123,6 +106,196 @@ function OrbitalRing({ score }) {
         </svg>
         <span style={{ color: '#10b981' }}>+3 pts</span>
         <span>from last month</span>
+      </div>
+    </div>
+  )
+}
+
+// ── Live Governance Telemetry Chart ───────────────────────────────────────────
+function LiveTelemetryChart({ initialScore, onScoreChange }) {
+  const WINDOW = 60
+  const TICK_MS = 3000
+  const Y_MIN = 60
+  const Y_MAX = 100
+
+  const [data, setData] = useState(() =>
+    Array.from({ length: WINDOW }, () => initialScore)
+  )
+  const [lastDelta, setLastDelta] = useState(0)
+  const momentumRef = useRef(0)
+  const dataRef = useRef(Array.from({ length: WINDOW }, () => initialScore))
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const last = dataRef.current[dataRef.current.length - 1]
+      const bias = momentumRef.current * 0.4
+      const raw = (Math.random() - 0.5 + bias) * 5.5
+      const delta = Math.max(-3, Math.min(3, Math.round(raw)))
+      const newVal = Math.max(65, Math.min(98, last + delta))
+      const actual = newVal - last
+
+      momentumRef.current = actual
+      const next = [...dataRef.current.slice(1), newVal]
+      dataRef.current = next
+      setData(next)
+      setLastDelta(actual)
+      onScoreChange?.(newVal)
+    }, TICK_MS)
+    return () => clearInterval(id)
+  }, [onScoreChange])
+
+  // SVG layout constants
+  const W = 600
+  const H = 160
+  const PL = 34   // padding left (Y axis labels)
+  const PR = 12   // padding right
+  const PT = 10   // padding top
+  const PB = 8    // padding bottom
+  const pw = W - PL - PR
+  const ph = H - PT - PB
+
+  const xs = i => PL + (i / (WINDOW - 1)) * pw
+  const ys = v => PT + ph - ((v - Y_MIN) / (Y_MAX - Y_MIN)) * ph
+
+  const lastVal = data[data.length - 1]
+  const color = lastVal >= 80 ? '#00d4ff' : lastVal >= 65 ? '#f59e0b' : '#ef4444'
+
+  // Catmull-Rom / cardinal spline (α = 0.4) — same command count every render
+  const pts = data.map((v, i) => ({ x: xs(i), y: ys(v) }))
+
+  function buildPath(points) {
+    if (points.length < 2) return ''
+    const a = 0.4
+    let d = `M ${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}`
+    for (let i = 1; i < points.length; i++) {
+      const p0 = points[Math.max(0, i - 2)]
+      const p1 = points[i - 1]
+      const p2 = points[i]
+      const p3 = points[Math.min(points.length - 1, i + 1)]
+      const cp1x = (p1.x + (p2.x - p0.x) * a / 3).toFixed(2)
+      const cp1y = (p1.y + (p2.y - p0.y) * a / 3).toFixed(2)
+      const cp2x = (p2.x - (p3.x - p1.x) * a / 3).toFixed(2)
+      const cp2y = (p2.y - (p3.y - p1.y) * a / 3).toFixed(2)
+      d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`
+    }
+    return d
+  }
+
+  const linePath = buildPath(pts)
+  const botY = PT + ph
+  const areaPath = `${linePath} L ${pts[pts.length - 1].x.toFixed(2)},${botY} L ${pts[0].x.toFixed(2)},${botY} Z`
+  const livePt = pts[pts.length - 1]
+
+  const yLabels = [65, 70, 75, 80, 85, 90, 95, 100]
+  const xGridXs = [0, 10, 20, 30, 40, 50].map(i => xs(i))
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        style={{ width: '100%', height: '175px', display: 'block', overflow: 'visible' }}
+      >
+        <defs>
+          <linearGradient id="liveAreaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.18"
+              style={{ transition: 'stop-color 1.2s ease' }} />
+            <stop offset="100%" stopColor={color} stopOpacity="0.01"
+              style={{ transition: 'stop-color 1.2s ease' }} />
+          </linearGradient>
+          <filter id="liveDotGlow" x="-150%" y="-150%" width="400%" height="400%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Vertical grid lines */}
+        {xGridXs.map((x, i) => (
+          <line key={i} x1={x} y1={PT} x2={x} y2={PT + ph}
+            stroke="rgba(0,212,255,0.08)" strokeWidth="1" strokeDasharray="3,5" />
+        ))}
+
+        {/* Y axis gridlines + labels */}
+        {yLabels.map(v => (
+          <g key={v}>
+            <line
+              x1={PL} y1={ys(v)} x2={W - PR} y2={ys(v)}
+              stroke={v === 80 ? 'rgba(16,185,129,0.16)' : 'rgba(0,212,255,0.05)'}
+              strokeWidth={v === 80 ? 1.5 : 1}
+              strokeDasharray={v === 80 ? '5,5' : '2,6'}
+            />
+            <text
+              x={PL - 5} y={ys(v) + 3.5}
+              textAnchor="end"
+              fill={v === 80 ? 'rgba(16,185,129,0.55)' : 'rgba(136,153,187,0.4)'}
+              fontSize="7.5"
+              style={{ fontFamily: 'system-ui' }}
+            >{v}</text>
+          </g>
+        ))}
+
+        {/* Area fill — CSS d-property transition makes it morph smoothly */}
+        <path
+          d={areaPath}
+          fill="url(#liveAreaGrad)"
+          style={{ transition: 'd 0.7s cubic-bezier(0.25,0.46,0.45,0.94)' }}
+        />
+
+        {/* Line */}
+        <path
+          d={linePath}
+          fill="none"
+          stroke={color}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+          style={{ transition: 'd 0.7s cubic-bezier(0.25,0.46,0.45,0.94), stroke 1.2s ease' }}
+        />
+
+        {/* Live position: pulsing ring */}
+        <circle
+          cx={livePt.x} cy={livePt.y}
+          r="5" fill="none" stroke={color} strokeWidth="1.2" opacity="0.45"
+          className="chart-dot-ring"
+          style={{ transition: 'cx 0.7s ease, cy 0.7s ease, stroke 1.2s ease' }}
+        />
+        {/* Live position: solid glow dot */}
+        <circle
+          cx={livePt.x} cy={livePt.y}
+          r="3" fill={color}
+          filter="url(#liveDotGlow)"
+          style={{ transition: 'cx 0.7s ease, cy 0.7s ease, fill 1.2s ease' }}
+        />
+      </svg>
+
+      {/* Bottom-right score readout */}
+      <div style={{
+        position: 'absolute',
+        bottom: '10px',
+        right: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '5px',
+        background: 'rgba(2,5,14,0.8)',
+        border: `1px solid ${color}30`,
+        borderRadius: '6px',
+        padding: '3px 9px',
+        backdropFilter: 'blur(6px)',
+        transition: 'border-color 1.2s ease',
+      }}>
+        <span style={{
+          color: lastDelta > 0 ? '#10b981' : lastDelta < 0 ? '#ef4444' : 'rgba(136,153,187,0.6)',
+          fontSize: '9px', fontWeight: 800, lineHeight: 1,
+        }}>
+          {lastDelta > 0 ? '▲' : lastDelta < 0 ? '▼' : '─'}
+        </span>
+        <span style={{
+          color, fontSize: '13px', fontWeight: 700, fontFamily: 'system-ui',
+          transition: 'color 1.2s ease',
+        }}>
+          {lastVal}
+        </span>
       </div>
     </div>
   )
@@ -176,10 +349,10 @@ function LiveKpiCard({ label, value, sub, valueColor, iconBg, icon }) {
 // ── Live Framework Card ───────────────────────────────────────────────────────
 function LiveFrameworkCard({ fw, liveScore }) {
   const style = {
-    Compliant:        { bar: '#00d4ff', glow: 'rgba(0,212,255,0.7)',    label: '#67e8f9' },
-    'At Risk':        { bar: '#f59e0b', glow: 'rgba(245,158,11,0.7)',   label: '#fbbf24' },
-    'Non-Compliant':  { bar: '#ef4444', glow: 'rgba(239,68,68,0.7)',    label: '#f87171' },
-    'Under Review':   { bar: '#818cf8', glow: 'rgba(129,140,248,0.5)', label: '#a5b4fc' },
+    Compliant:       { bar: '#00d4ff', glow: 'rgba(0,212,255,0.7)',    label: '#67e8f9' },
+    'At Risk':       { bar: '#f59e0b', glow: 'rgba(245,158,11,0.7)',   label: '#fbbf24' },
+    'Non-Compliant': { bar: '#ef4444', glow: 'rgba(239,68,68,0.7)',    label: '#f87171' },
+    'Under Review':  { bar: '#818cf8', glow: 'rgba(129,140,248,0.5)', label: '#a5b4fc' },
   }[fw.status] || { bar: '#818cf8', glow: 'rgba(129,140,248,0.5)', label: '#a5b4fc' }
 
   return (
@@ -195,10 +368,8 @@ function LiveFrameworkCard({ fw, liveScore }) {
         <div className="flex-1 rounded-full overflow-hidden"
           style={{ height: '4px', background: 'rgba(255,255,255,0.05)' }}>
           <div style={{
-            height: '100%',
-            width: `${liveScore}%`,
-            background: style.bar,
-            borderRadius: '9999px',
+            height: '100%', width: `${liveScore}%`,
+            background: style.bar, borderRadius: '9999px',
             boxShadow: `0 0 6px ${style.glow}`,
             transition: 'width 0.9s ease',
           }} />
@@ -211,21 +382,7 @@ function LiveFrameworkCard({ fw, liveScore }) {
   )
 }
 
-// ── Chart Tooltip ─────────────────────────────────────────────────────────────
-const ChartTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null
-  return (
-    <div className="mission-tooltip">
-      <div style={{ color: '#8899bb', marginBottom: '4px', fontSize: '11px' }}>{label}</div>
-      {payload.map(p => (
-        <div key={p.name} style={{ color: '#00d4ff', fontWeight: 600, fontSize: '12px' }}>
-          {p.name}: {p.value}
-        </div>
-      ))}
-    </div>
-  )
-}
-
+// ── Pie Tooltip ───────────────────────────────────────────────────────────────
 const PieTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null
   const d = payload[0]
@@ -243,7 +400,7 @@ function TerminalEventRow({ ev }) {
   const isWarn = ev.outcome === 'Warning'
   const isFlag = ev.outcome === 'Flag'
   const borderColor = isPass ? '#10b981' : isWarn ? '#f59e0b' : isFlag ? '#ef4444' : '#818cf8'
-  const textColor = isPass ? '#6ee7b7' : isWarn ? '#fbbf24' : isFlag ? '#f87171' : '#a5b4fc'
+  const textColor  = isPass ? '#6ee7b7' : isWarn ? '#fbbf24' : isFlag ? '#f87171' : '#a5b4fc'
 
   return (
     <div
@@ -278,61 +435,43 @@ function TerminalEventRow({ ev }) {
 }
 
 // ── Seed values ───────────────────────────────────────────────────────────────
-const SEED_SCORE        = 74
-const SEED_OPEN_RISKS   = risks.filter(r => r.status === 'Open').length
-const SEED_HIGH_RISK    = models.filter(m => m.riskTier === 'High' && m.status !== 'Retired').length
-const SEED_PENDING      = models.filter(m => m.status === 'Under Review').length
-const SEED_ACTIVE       = models.filter(m => m.status === 'Active').length
+const SEED_SCORE      = 74
+const SEED_OPEN_RISKS = risks.filter(r => r.status === 'Open').length
+const SEED_HIGH_RISK  = models.filter(m => m.riskTier === 'High' && m.status !== 'Retired').length
+const SEED_PENDING    = models.filter(m => m.status === 'Under Review').length
+const SEED_ACTIVE     = models.filter(m => m.status === 'Active').length
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function Overview() {
-  // Live metric state
-  const [targetScore, setTargetScore]     = useState(SEED_SCORE)
-  const [fwScores, setFwScores]           = useState(complianceFrameworks.map(fw => fw.score))
-  const [openRisks, setOpenRisks]         = useState(SEED_OPEN_RISKS)
+  // Score is driven by LiveTelemetryChart via onScoreChange
+  const [targetScore, setTargetScore]       = useState(SEED_SCORE)
+  const [fwScores, setFwScores]             = useState(complianceFrameworks.map(fw => fw.score))
+  const [openRisks, setOpenRisks]           = useState(SEED_OPEN_RISKS)
   const [highRiskModels, setHighRiskModels] = useState(SEED_HIGH_RISK)
   const [pendingReviews, setPendingReviews] = useState(SEED_PENDING)
-  const [activeModels, setActiveModels]   = useState(SEED_ACTIVE)
+  const [activeModels, setActiveModels]     = useState(SEED_ACTIVE)
 
   const displayScore = useAnimatedNumber(targetScore, 600)
 
-  // Mutable refs so recursive setTimeout closures always read latest value
-  const scoreRef     = useRef(SEED_SCORE)
-  const openRef      = useRef(SEED_OPEN_RISKS)
-  const highRef      = useRef(SEED_HIGH_RISK)
-  const pendingRef   = useRef(SEED_PENDING)
-  const activeRef    = useRef(SEED_ACTIVE)
-  const fwRef        = useRef(complianceFrameworks.map(fw => fw.score))
-
-  // ── Governance health score ───────────────────────────────────────────────
-  useEffect(() => {
-    let t
-    function tick() {
-      const delta = (Math.random() < 0.5 ? -1 : 1) * (Math.random() < 0.3 ? 2 : 1)
-      scoreRef.current = Math.max(68, Math.min(96, scoreRef.current + delta))
-      setTargetScore(scoreRef.current)
-      t = setTimeout(tick, 4000 + Math.random() * 2000)
-    }
-    t = setTimeout(tick, 4000 + Math.random() * 2000)
-    return () => clearTimeout(t)
-  }, [])
+  const openRef    = useRef(SEED_OPEN_RISKS)
+  const highRef    = useRef(SEED_HIGH_RISK)
+  const pendingRef = useRef(SEED_PENDING)
+  const activeRef  = useRef(SEED_ACTIVE)
+  const fwRef      = useRef(complianceFrameworks.map(fw => fw.score))
 
   // ── Compliance framework scores ───────────────────────────────────────────
   useEffect(() => {
-    // Per-framework bounds based on initial status
     const bounds = complianceFrameworks.map(fw => {
-      if (fw.status === 'Non-Compliant')  return { lo: 25, hi: 50 }
-      if (fw.status === 'At Risk')        return { lo: 45, hi: 72 }
-      if (fw.status === 'Under Review')   return { lo: 60, hi: 85 }
+      if (fw.status === 'Non-Compliant') return { lo: 25, hi: 50 }
+      if (fw.status === 'At Risk')       return { lo: 45, hi: 72 }
+      if (fw.status === 'Under Review')  return { lo: 60, hi: 85 }
       return { lo: 72, hi: 99 }
     })
-
     const handles = []
     function schedule(i) {
       handles[i] = setTimeout(() => {
-        const delta = Math.random() < 0.5 ? -1 : 1
         const { lo, hi } = bounds[i]
-        fwRef.current[i] = Math.max(lo, Math.min(hi, fwRef.current[i] + delta))
+        fwRef.current[i] = Math.max(lo, Math.min(hi, fwRef.current[i] + (Math.random() < 0.5 ? -1 : 1)))
         setFwScores([...fwRef.current])
         schedule(i)
       }, 6000 + Math.random() * 4000)
@@ -341,7 +480,7 @@ export default function Overview() {
     return () => handles.forEach(h => clearTimeout(h))
   }, [])
 
-  // ── Open risks: discovery (ticks up) ─────────────────────────────────────
+  // ── Open risks: discovery ─────────────────────────────────────────────────
   useEffect(() => {
     let t
     function tick() {
@@ -352,7 +491,7 @@ export default function Overview() {
     return () => clearTimeout(t)
   }, [])
 
-  // ── Open risks: resolution (ticks down) ──────────────────────────────────
+  // ── Open risks: resolution ────────────────────────────────────────────────
   useEffect(() => {
     let t
     function tick() {
@@ -367,8 +506,7 @@ export default function Overview() {
   useEffect(() => {
     let t
     function tick() {
-      const delta = Math.random() < 0.5 ? -1 : 1
-      highRef.current = Math.max(2, Math.min(6, highRef.current + delta))
+      highRef.current = Math.max(2, Math.min(6, highRef.current + (Math.random() < 0.5 ? -1 : 1)))
       setHighRiskModels(highRef.current)
       t = setTimeout(tick, 30000 + Math.random() * 20000)
     }
@@ -380,8 +518,7 @@ export default function Overview() {
   useEffect(() => {
     let t
     function tick() {
-      const delta = Math.random() < 0.5 ? -1 : 1
-      pendingRef.current = Math.max(1, Math.min(6, pendingRef.current + delta))
+      pendingRef.current = Math.max(1, Math.min(6, pendingRef.current + (Math.random() < 0.5 ? -1 : 1)))
       setPendingReviews(pendingRef.current)
       t = setTimeout(tick, 25000 + Math.random() * 15000)
     }
@@ -393,8 +530,7 @@ export default function Overview() {
   useEffect(() => {
     let t
     function tick() {
-      const delta = Math.random() < 0.5 ? -1 : 1
-      activeRef.current = Math.max(3, Math.min(8, activeRef.current + delta))
+      activeRef.current = Math.max(3, Math.min(8, activeRef.current + (Math.random() < 0.5 ? -1 : 1)))
       setActiveModels(activeRef.current)
       t = setTimeout(tick, 35000 + Math.random() * 20000)
     }
@@ -442,16 +578,12 @@ export default function Overview() {
 
       {/* Row 1: Orbital Ring + KPIs */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-5">
-
-        {/* Governance Health Score */}
         <div className="lg:col-span-1 glass-panel rounded-xl p-5 flex flex-col items-center justify-center">
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px',
-          }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
             <span className="status-dot-live" style={{ width: '6px', height: '6px' }} />
-            <span className="live-badge" style={{
-              color: '#10b981', fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px',
-            }}>LIVE</span>
+            <span className="live-badge" style={{ color: '#10b981', fontSize: '9px', fontWeight: 700, letterSpacing: '2.5px' }}>
+              LIVE
+            </span>
           </div>
           <OrbitalRing score={displayScore} />
           <div style={{
@@ -462,59 +594,30 @@ export default function Overview() {
           </div>
         </div>
 
-        {/* KPI Cards */}
         <div className="lg:col-span-3 grid grid-cols-2 lg:grid-cols-4 gap-4">
           <LiveKpiCard
-            label="Open Risks"
-            value={openRisks}
-            sub="Require immediate action"
-            valueColor="#f87171"
-            iconBg="rgba(239,68,68,0.08)"
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="#f87171" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-              </svg>
-            }
+            label="Open Risks" value={openRisks} sub="Require immediate action"
+            valueColor="#f87171" iconBg="rgba(239,68,68,0.08)"
+            icon={<svg className="w-5 h-5" fill="none" stroke="#f87171" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>}
           />
           <LiveKpiCard
-            label="High-Risk Models"
-            value={highRiskModels}
-            sub="Active, unretired systems"
-            valueColor="#fbbf24"
-            iconBg="rgba(245,158,11,0.08)"
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="#fbbf24" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
-              </svg>
-            }
+            label="High-Risk Models" value={highRiskModels} sub="Active, unretired systems"
+            valueColor="#fbbf24" iconBg="rgba(245,158,11,0.08)"
+            icon={<svg className="w-5 h-5" fill="none" stroke="#fbbf24" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" /></svg>}
           />
           <LiveKpiCard
-            label="Pending Reviews"
-            value={pendingReviews}
-            sub={`${activeModels} models fully active`}
-            valueColor="#00d4ff"
-            iconBg="rgba(0,212,255,0.08)"
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="#00d4ff" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            }
+            label="Pending Reviews" value={pendingReviews} sub={`${activeModels} models fully active`}
+            valueColor="#00d4ff" iconBg="rgba(0,212,255,0.08)"
+            icon={<svg className="w-5 h-5" fill="none" stroke="#00d4ff" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
           />
           <LiveKpiCard
-            label="Active Models"
-            value={activeModels}
-            sub="In production systems"
-            valueColor="#a78bfa"
-            iconBg="rgba(139,92,246,0.08)"
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="#a78bfa" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
-              </svg>
-            }
+            label="Active Models" value={activeModels} sub="In production systems"
+            valueColor="#a78bfa" iconBg="rgba(139,92,246,0.08)"
+            icon={<svg className="w-5 h-5" fill="none" stroke="#a78bfa" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" /></svg>}
           />
         </div>
       </div>
@@ -534,38 +637,40 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* Row 3: Charts */}
+      {/* Row 3: Live Chart + Risk Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
+
+        {/* Live Governance Telemetry */}
         <div className="lg:col-span-2 glass-panel rounded-xl p-5">
-          <h2 style={{ color: '#f0f4ff', fontSize: '12px', fontWeight: 600, letterSpacing: '0.5px', marginBottom: '16px' }}>
-            Governance Score Trend
-            <span style={{ color: '#8899bb', fontWeight: 400, marginLeft: '6px' }}>(12 months)</span>
-          </h2>
-          <ResponsiveContainer width="100%" height={175}>
-            <AreaChart data={complianceTrend} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00d4ff" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#00d4ff" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,212,255,0.06)" />
-              <XAxis dataKey="month" tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis domain={[40, 100]} tick={{ fill: '#8899bb', fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Area
-                type="monotone" dataKey="score" name="Score"
-                stroke="#00d4ff" strokeWidth={2}
-                fill="url(#areaGrad)"
-                dot={false}
-                activeDot={{ r: 4, fill: '#00d4ff', strokeWidth: 0, filter: 'drop-shadow(0 0 4px #00d4ff)' }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 style={{
+                color: '#f0f4ff', fontSize: '11px', fontWeight: 700,
+                letterSpacing: '2px', textTransform: 'uppercase',
+              }}>
+                Live Governance Telemetry
+              </h2>
+              <p style={{ color: '#8899bb', fontSize: '10px', marginTop: '2px' }}>
+                60-point rolling window · updates every 3s
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="status-dot-live" style={{ width: '6px', height: '6px' }} />
+              <span className="live-badge" style={{
+                color: '#10b981', fontSize: '9px', fontWeight: 700, letterSpacing: '2px',
+              }}>
+                STREAMING
+              </span>
+            </div>
+          </div>
+          <LiveTelemetryChart initialScore={SEED_SCORE} onScoreChange={setTargetScore} />
         </div>
 
+        {/* Risk Distribution */}
         <div className="glass-panel rounded-xl p-5">
-          <h2 style={{ color: '#f0f4ff', fontSize: '12px', fontWeight: 600, marginBottom: '4px' }}>Risk Distribution</h2>
+          <h2 style={{ color: '#f0f4ff', fontSize: '12px', fontWeight: 600, marginBottom: '4px' }}>
+            Risk Distribution
+          </h2>
           <div className="flex items-center justify-center">
             <PieChart width={180} height={165}>
               <Pie data={riskDistribution} cx={88} cy={80} innerRadius={46} outerRadius={68}
