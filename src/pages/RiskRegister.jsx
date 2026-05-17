@@ -5,6 +5,9 @@ import { exportRisksCSV } from '../utils/exportUtils'
 
 const SEVERITY_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 }
 
+const likelihoodColor = l =>
+  l === 'High' ? '#f87171' : l === 'Medium' ? '#fbbf24' : '#6ee7b7'
+
 export default function RiskRegister() {
   const [filterSeverity, setFilterSeverity] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
@@ -34,27 +37,26 @@ export default function RiskRegister() {
     resolved: risks.filter(r => r.status === 'Resolved').length,
   }
 
-  const likelihoodDot = l =>
-    l === 'High' ? 'text-red-400' : l === 'Medium' ? 'text-amber-400' : 'text-emerald-400'
-
   return (
-    <div className="p-6 max-w-screen-xl mx-auto">
+    <div className="p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-100">Risk Register</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{risks.length} identified risks across all AI systems</p>
+          <h1 style={{ color: '#f0f4ff', fontSize: '18px', fontWeight: 700, letterSpacing: '0.5px' }}>
+            Risk Register
+          </h1>
+          <p style={{ color: '#8899bb', fontSize: '12px', marginTop: '3px' }}>
+            {risks.length} identified risks across all AI systems
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => exportRisksCSV(filtered)}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn-mission" onClick={() => exportRisksCSV(filtered)}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             Export CSV
           </button>
-          <button className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 rounded-lg px-3 py-1.5 text-sm transition-colors">
+          <button className="btn-mission btn-mission-danger">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -63,18 +65,20 @@ export default function RiskRegister() {
         </div>
       </div>
 
-      {/* Summary stats */}
+      {/* Stat cards */}
       <div className="grid grid-cols-5 gap-3 mb-5">
         {[
-          { label: 'Total Risks', value: counts.total, color: 'text-slate-100' },
-          { label: 'Open', value: counts.open, color: 'text-red-400' },
-          { label: 'Critical', value: counts.critical, color: 'text-red-300' },
-          { label: 'Mitigating', value: counts.mitigating, color: 'text-amber-400' },
-          { label: 'Resolved', value: counts.resolved, color: 'text-emerald-400' },
+          { label: 'Total Risks', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
+          { label: 'Open', value: counts.open, color: '#f87171', glow: 'rgba(239,68,68,0.3)' },
+          { label: 'Critical', value: counts.critical, color: '#fca5a5', glow: 'rgba(239,68,68,0.4)' },
+          { label: 'Mitigating', value: counts.mitigating, color: '#fbbf24', glow: 'rgba(245,158,11,0.3)' },
+          { label: 'Resolved', value: counts.resolved, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
         ].map(s => (
-          <div key={s.label} className="bg-slate-800 border border-slate-700/50 rounded-xl px-4 py-3 text-center">
-            <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-slate-500 text-xs mt-0.5">{s.label}</div>
+          <div key={s.label} className="glass-panel rounded-xl px-4 py-3 text-center">
+            <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
+              {s.value}
+            </div>
+            <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -82,22 +86,24 @@ export default function RiskRegister() {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="relative flex-1 min-w-48 max-w-xs">
-          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#8899bb' }}
+            fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
-          <input type="text" placeholder="Search risks..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-blue-500" />
+          <input
+            type="text" placeholder="Search risks..." value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full rounded-lg pl-9 pr-3 py-2 text-sm"
+          />
         </div>
-        <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+        <select value={filterSeverity} onChange={e => setFilterSeverity(e.target.value)} className="rounded-lg px-3 py-2 text-sm">
           <option value="">All Severities</option>
           <option value="Critical">Critical</option>
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="rounded-lg px-3 py-2 text-sm">
           <option value="">All Statuses</option>
           <option value="Open">Open</option>
           <option value="Mitigating">Mitigating</option>
@@ -105,66 +111,82 @@ export default function RiskRegister() {
           <option value="Accepted">Accepted</option>
           <option value="Resolved">Resolved</option>
         </select>
-        <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+        <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)} className="rounded-lg px-3 py-2 text-sm">
           <option value="">All Categories</option>
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         {(filterSeverity || filterStatus || filterCategory || search) && (
-          <button onClick={() => { setFilterSeverity(''); setFilterStatus(''); setFilterCategory(''); setSearch('') }}
-            className="text-slate-500 hover:text-slate-300 text-sm transition-colors">
+          <button
+            onClick={() => { setFilterSeverity(''); setFilterStatus(''); setFilterCategory(''); setSearch('') }}
+            style={{ color: '#8899bb', fontSize: '13px', cursor: 'pointer', background: 'none', border: 'none', transition: 'color 150ms ease' }}
+            onMouseOver={e => e.target.style.color = '#f0f4ff'}
+            onMouseOut={e => e.target.style.color = '#8899bb'}
+          >
             Clear
           </button>
         )}
-        <span className="text-slate-600 text-xs ml-auto">{filtered.length} of {risks.length} shown</span>
+        <span style={{ color: 'rgba(136,153,187,0.5)', fontSize: '11px', marginLeft: 'auto' }} className="mono">
+          {filtered.length} / {risks.length} shown
+        </span>
       </div>
 
       {/* Table */}
-      <div className="bg-slate-800 border border-slate-700/50 rounded-xl overflow-hidden">
+      <div className="glass-panel rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse' }}>
             <thead>
-              <tr className="border-b border-slate-700/50">
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">ID</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Description</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Category</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Severity</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Likelihood</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Status</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Owner</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Due Date</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Model</th>
+              <tr style={{ borderBottom: '1px solid rgba(0,212,255,0.07)', background: 'rgba(0,212,255,0.02)' }}>
+                {['ID', 'Description', 'Category', 'Severity', 'Likelihood', 'Status', 'Owner', 'Due Date', 'Model'].map(h => (
+                  <th key={h} style={{
+                    textAlign: 'left', padding: '10px 16px',
+                    color: 'rgba(0,212,255,0.45)', fontWeight: 600,
+                    fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase',
+                  }}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map(r => (
-                <tr key={r.id} className="border-b border-slate-700/30 last:border-0 hover:bg-slate-700/30 transition-colors">
-                  <td className="px-4 py-3">
-                    <span className="font-mono text-xs text-slate-500">{r.id}</span>
+                <tr key={r.id} className="data-row">
+                  <td style={{ padding: '11px 16px' }}>
+                    <span className="mono" style={{ color: 'rgba(0,212,255,0.5)', fontSize: '11px' }}>{r.id}</span>
                   </td>
-                  <td className="px-4 py-3 max-w-xs">
-                    <p className="text-slate-200 text-xs leading-relaxed">{r.description}</p>
+                  <td style={{ padding: '11px 16px', maxWidth: '260px' }}>
+                    <p style={{ color: '#c8d8f0', fontSize: '12px', lineHeight: '1.5' }}>{r.description}</p>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className="text-slate-400 text-xs bg-slate-700/50 px-2 py-0.5 rounded-md">{r.category}</span>
+                  <td style={{ padding: '11px 16px' }}>
+                    <span style={{
+                      color: '#8899bb', fontSize: '11px',
+                      background: 'rgba(0,212,255,0.05)',
+                      border: '1px solid rgba(0,212,255,0.1)',
+                      borderRadius: '5px', padding: '2px 8px',
+                    }}>
+                      {r.category}
+                    </span>
                   </td>
-                  <td className="px-4 py-3"><StatusBadge status={r.severity} /></td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs font-medium ${likelihoodDot(r.likelihood)}`}>{r.likelihood}</span>
+                  <td style={{ padding: '11px 16px' }}><StatusBadge status={r.severity} /></td>
+                  <td style={{ padding: '11px 16px' }}>
+                    <span style={{ color: likelihoodColor(r.likelihood), fontSize: '12px', fontWeight: 600 }}>
+                      {r.likelihood}
+                    </span>
                   </td>
-                  <td className="px-4 py-3"><StatusBadge status={r.status} /></td>
-                  <td className="px-4 py-3 text-slate-400 text-xs">{r.owner}</td>
-                  <td className="px-4 py-3 text-slate-400 text-xs font-mono">{r.dueDate}</td>
-                  <td className="px-4 py-3">
+                  <td style={{ padding: '11px 16px' }}><StatusBadge status={r.status} /></td>
+                  <td style={{ padding: '11px 16px', color: '#8899bb', fontSize: '12px' }}>{r.owner}</td>
+                  <td style={{ padding: '11px 16px' }}>
+                    <span className="mono" style={{ color: '#8899bb', fontSize: '11px' }}>{r.dueDate}</span>
+                  </td>
+                  <td style={{ padding: '11px 16px' }}>
                     {r.relatedModel
-                      ? <span className="font-mono text-xs text-blue-400">{r.relatedModel}</span>
-                      : <span className="text-slate-600 text-xs">—</span>}
+                      ? <span className="mono" style={{ color: 'rgba(0,212,255,0.7)', fontSize: '11px' }}>{r.relatedModel}</span>
+                      : <span style={{ color: 'rgba(136,153,187,0.3)' }}>—</span>}
                   </td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-12 text-center text-slate-600">No risks match the current filters.</td>
+                  <td colSpan={9} style={{ padding: '48px 16px', textAlign: 'center', color: 'rgba(136,153,187,0.4)' }}>
+                    No risks match the current filters.
+                  </td>
                 </tr>
               )}
             </tbody>

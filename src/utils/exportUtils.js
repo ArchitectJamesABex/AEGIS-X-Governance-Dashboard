@@ -32,6 +32,14 @@ export function exportModelsCSV(models) {
   )
 }
 
+export function exportAuditCSV(events) {
+  downloadCSV(
+    `audit-log-${new Date().toISOString().slice(0, 10)}.csv`,
+    ['ID', 'Type', 'System', 'Actor', 'Outcome', 'Details', 'Timestamp'],
+    events.map(e => [e.id, e.type, e.system, e.actor, e.outcome, e.details, e.timestamp]),
+  )
+}
+
 export function exportRisksCSV(risks) {
   downloadCSV(
     `risk-register-${new Date().toISOString().slice(0, 10)}.csv`,

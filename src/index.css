@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,8 +8,8 @@
 
 body {
   margin: 0;
-  background-color: #020617;
-  color: #f1f5f9;
+  background-color: #050914;
+  color: #f0f4ff;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -15,6 +17,251 @@ body {
 #root { width: 100%; text-align: left; }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #0f172a; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+::-webkit-scrollbar-track { background: #030810; }
+::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.14); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 212, 255, 0.3); }
+
+/* ── Starfield ───────────────────────────────────────────────────────────────── */
+.starfield-star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation-name: star-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: var(--star-opacity, 0.4); }
+  50% { opacity: calc(var(--star-opacity, 0.4) * 0.15); }
+}
+
+/* ── Horizon glow ────────────────────────────────────────────────────────────── */
+.horizon-glow {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 240px;
+  background: radial-gradient(
+    ellipse 130% 100% at 50% 110%,
+    rgba(0, 55, 140, 0.28) 0%,
+    rgba(0, 25, 70, 0.18) 35%,
+    rgba(0, 10, 35, 0.08) 60%,
+    transparent 80%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: horizon-breathe 7s ease-in-out infinite;
+}
+
+@keyframes horizon-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* ── Glass panel ─────────────────────────────────────────────────────────────── */
+.glass-panel {
+  background: linear-gradient(135deg, rgba(8, 16, 36, 0.92) 0%, rgba(3, 8, 22, 0.96) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.09);
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 8px 32px rgba(0, 0, 0, 0.55);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 8px 32px rgba(0, 212, 255, 0.07);
+}
+
+/* ── Orbital ring animation ──────────────────────────────────────────────────── */
+.orbital-ring-svg {
+  animation: ring-pulse 3s ease-in-out infinite;
+}
+
+@keyframes ring-pulse {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 6px var(--ring-color))
+      drop-shadow(0 0 14px var(--ring-color));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 12px var(--ring-color))
+      drop-shadow(0 0 28px var(--ring-color));
+  }
+}
+
+.score-pulse {
+  animation: score-text-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes score-text-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.78; }
+}
+
+/* ── Critical badge pulse ────────────────────────────────────────────────────── */
+.badge-critical-pulse {
+  animation: critical-badge-glow 2s ease-in-out infinite;
+}
+
+@keyframes critical-badge-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(239, 68, 68, 0.45), inset 0 0 6px rgba(239, 68, 68, 0.07); }
+  50% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.75), inset 0 0 10px rgba(239, 68, 68, 0.14); }
+}
+
+/* ── Sidebar nav active state ────────────────────────────────────────────────── */
+.nav-item-active {
+  background: rgba(0, 212, 255, 0.055) !important;
+  border-left-color: #00d4ff !important;
+  color: #00d4ff !important;
+  box-shadow: inset 4px 0 18px rgba(0, 212, 255, 0.08);
+}
+
+.nav-item-base {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 2px;
+  transition: all 150ms ease;
+  color: #6a7a96;
+}
+
+.nav-item-base:hover {
+  color: #c8d8f0;
+  background: rgba(0, 212, 255, 0.025);
+}
+
+.nav-item-base:hover .nav-icon {
+  color: rgba(0, 212, 255, 0.65);
+  filter: drop-shadow(0 0 3px rgba(0, 212, 255, 0.5));
+}
+
+.nav-item-active .nav-icon {
+  color: #00d4ff;
+  filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.9));
+}
+
+/* ── Mission control buttons ─────────────────────────────────────────────────── */
+.btn-mission {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid rgba(0, 212, 255, 0.14);
+  color: #8899bb;
+}
+
+.btn-mission:hover {
+  background: rgba(0, 212, 255, 0.09);
+  border-color: rgba(0, 212, 255, 0.28);
+  color: #e0eaff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.12);
+}
+
+.btn-mission-primary {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+}
+
+.btn-mission-primary:hover {
+  background: rgba(0, 212, 255, 0.18);
+  border-color: rgba(0, 212, 255, 0.5);
+  color: #67e8f9;
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
+}
+
+.btn-mission-danger {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.btn-mission-danger:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+/* ── Terminal / audit log style ──────────────────────────────────────────────── */
+.terminal-entry {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+  font-size: 11.5px;
+  line-height: 1.65;
+}
+
+.mono { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace; }
+
+/* ── Interactive hover glow for all elements ─────────────────────────────────── */
+select, input {
+  background: rgba(4, 10, 24, 0.8) !important;
+  border: 1px solid rgba(0, 212, 255, 0.1) !important;
+  color: #c8d8f0 !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+select:focus, input:focus {
+  outline: none !important;
+  border-color: rgba(0, 212, 255, 0.35) !important;
+  box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.1), 0 0 12px rgba(0, 212, 255, 0.08) !important;
+}
+
+select option {
+  background: #060c1e;
+  color: #c8d8f0;
+}
+
+/* ── Chart tooltip ───────────────────────────────────────────────────────────── */
+.mission-tooltip {
+  background: rgba(4, 10, 24, 0.95) !important;
+  border: 1px solid rgba(0, 212, 255, 0.15) !important;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+/* ── Live indicator ──────────────────────────────────────────────────────────── */
+@keyframes live-ring {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.status-dot-live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+  animation: live-ring 2s ease-out infinite;
+}
+
+/* ── Table rows ──────────────────────────────────────────────────────────────── */
+.data-row {
+  border-bottom: 1px solid rgba(0, 212, 255, 0.05);
+  transition: background 150ms ease;
+}
+
+.data-row:last-child { border-bottom: none; }
+
+.data-row:hover {
+  background: rgba(0, 212, 255, 0.025) !important;
+}

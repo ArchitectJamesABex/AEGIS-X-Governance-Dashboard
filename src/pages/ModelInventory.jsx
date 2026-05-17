@@ -28,23 +28,25 @@ export default function ModelInventory() {
   }
 
   return (
-    <div className="p-6 max-w-screen-xl mx-auto">
+    <div className="p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-100">Model Inventory</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{models.length} registered AI systems across all departments</p>
+          <h1 style={{ color: '#f0f4ff', fontSize: '18px', fontWeight: 700, letterSpacing: '0.5px' }}>
+            Model Inventory
+          </h1>
+          <p style={{ color: '#8899bb', fontSize: '12px', marginTop: '3px' }}>
+            {models.length} registered AI systems across all departments
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => exportModelsCSV(filtered)}
-            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="btn-mission" onClick={() => exportModelsCSV(filtered)}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             Export CSV
           </button>
-          <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
+          <button className="btn-mission btn-mission-primary">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -53,18 +55,20 @@ export default function ModelInventory() {
         </div>
       </div>
 
-      {/* Summary stats */}
+      {/* Stat cards */}
       <div className="grid grid-cols-5 gap-3 mb-5">
         {[
-          { label: 'Total Models', value: counts.total, color: 'text-slate-100' },
-          { label: 'Active', value: counts.active, color: 'text-emerald-400' },
-          { label: 'Under Review', value: counts.review, color: 'text-blue-400' },
-          { label: 'Retired', value: counts.retired, color: 'text-slate-400' },
-          { label: 'High Risk', value: counts.high, color: 'text-red-400' },
+          { label: 'Total Models', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
+          { label: 'Active', value: counts.active, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
+          { label: 'Under Review', value: counts.review, color: '#67e8f9', glow: 'rgba(0,212,255,0.3)' },
+          { label: 'Retired', value: counts.retired, color: '#94a3b8', glow: 'rgba(148,163,184,0.2)' },
+          { label: 'High Risk', value: counts.high, color: '#f87171', glow: 'rgba(239,68,68,0.3)' },
         ].map(s => (
-          <div key={s.label} className="bg-slate-800 border border-slate-700/50 rounded-xl px-4 py-3 text-center">
-            <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-slate-500 text-xs mt-0.5">{s.label}</div>
+          <div key={s.label} className="glass-panel rounded-xl px-4 py-3 text-center">
+            <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
+              {s.value}
+            </div>
+            <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -72,78 +76,89 @@ export default function ModelInventory() {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="relative flex-1 min-w-48 max-w-xs">
-          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#8899bb' }}
+            fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
           <input
-            type="text"
-            placeholder="Search models..."
-            value={search}
+            type="text" placeholder="Search models..." value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-blue-500"
+            className="w-full rounded-lg pl-9 pr-3 py-2 text-sm"
           />
         </div>
-        <select value={filterRisk} onChange={e => setFilterRisk(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+        <select value={filterRisk} onChange={e => setFilterRisk(e.target.value)} className="rounded-lg px-3 py-2 text-sm">
           <option value="">All Risk Tiers</option>
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
-        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="rounded-lg px-3 py-2 text-sm">
           <option value="">All Statuses</option>
           <option value="Active">Active</option>
           <option value="Under Review">Under Review</option>
           <option value="Retired">Retired</option>
         </select>
         {(filterRisk || filterStatus || search) && (
-          <button onClick={() => { setFilterRisk(''); setFilterStatus(''); setSearch('') }}
-            className="text-slate-500 hover:text-slate-300 text-sm transition-colors">
+          <button
+            onClick={() => { setFilterRisk(''); setFilterStatus(''); setSearch('') }}
+            style={{ color: '#8899bb', fontSize: '13px', cursor: 'pointer', background: 'none', border: 'none', transition: 'color 150ms ease' }}
+            onMouseOver={e => e.target.style.color = '#f0f4ff'}
+            onMouseOut={e => e.target.style.color = '#8899bb'}
+          >
             Clear filters
           </button>
         )}
-        <span className="text-slate-600 text-xs ml-auto">{filtered.length} of {models.length} shown</span>
+        <span style={{ color: 'rgba(136,153,187,0.5)', fontSize: '11px', marginLeft: 'auto' }} className="mono">
+          {filtered.length} / {models.length} shown
+        </span>
       </div>
 
       {/* Table */}
-      <div className="bg-slate-800 border border-slate-700/50 rounded-xl overflow-hidden">
+      <div className="glass-panel rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse' }}>
             <thead>
-              <tr className="border-b border-slate-700/50">
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">ID</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Model Name</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Vendor</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Risk Tier</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Status</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Owner</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Department</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">Last Audit</th>
+              <tr style={{ borderBottom: '1px solid rgba(0,212,255,0.07)', background: 'rgba(0,212,255,0.02)' }}>
+                {['ID', 'Model Name', 'Vendor', 'Risk Tier', 'Status', 'Owner', 'Department', 'Last Audit'].map(h => (
+                  <th key={h} style={{
+                    textAlign: 'left', padding: '10px 16px',
+                    color: 'rgba(0,212,255,0.45)', fontWeight: 600,
+                    fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase',
+                  }}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {filtered.map((m, i) => (
-                <tr key={m.id}
-                  className={`border-b border-slate-700/30 last:border-0 hover:bg-slate-700/30 transition-colors ${m.status === 'Retired' ? 'opacity-60' : ''}`}>
-                  <td className="px-4 py-3">
-                    <span className="font-mono text-xs text-slate-500">{m.id}</span>
+              {filtered.map(m => (
+                <tr
+                  key={m.id}
+                  className="data-row"
+                  style={{ opacity: m.status === 'Retired' ? 0.5 : 1 }}
+                >
+                  <td style={{ padding: '11px 16px' }}>
+                    <span className="mono" style={{ color: 'rgba(0,212,255,0.5)', fontSize: '11px' }}>{m.id}</span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="text-slate-100 font-medium">{m.name}</div>
-                    <div className="text-slate-500 text-xs mt-0.5 max-w-48 truncate">{m.useCase}</div>
+                  <td style={{ padding: '11px 16px' }}>
+                    <div style={{ color: '#f0f4ff', fontWeight: 500 }}>{m.name}</div>
+                    <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '2px', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {m.useCase}
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-400">{m.vendor}</td>
-                  <td className="px-4 py-3"><StatusBadge status={m.riskTier} /></td>
-                  <td className="px-4 py-3"><StatusBadge status={m.status} /></td>
-                  <td className="px-4 py-3 text-slate-300 text-xs">{m.owner}</td>
-                  <td className="px-4 py-3 text-slate-400 text-xs">{m.department}</td>
-                  <td className="px-4 py-3 text-slate-400 text-xs font-mono">{m.lastAudit}</td>
+                  <td style={{ padding: '11px 16px', color: '#8899bb' }}>{m.vendor}</td>
+                  <td style={{ padding: '11px 16px' }}><StatusBadge status={m.riskTier} /></td>
+                  <td style={{ padding: '11px 16px' }}><StatusBadge status={m.status} /></td>
+                  <td style={{ padding: '11px 16px', color: '#c8d8f0', fontSize: '12px' }}>{m.owner}</td>
+                  <td style={{ padding: '11px 16px', color: '#8899bb', fontSize: '12px' }}>{m.department}</td>
+                  <td style={{ padding: '11px 16px' }}>
+                    <span className="mono" style={{ color: '#8899bb', fontSize: '11px' }}>{m.lastAudit}</span>
+                  </td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-slate-600">No models match the current filters.</td>
+                  <td colSpan={8} style={{ padding: '48px 16px', textAlign: 'center', color: 'rgba(136,153,187,0.4)' }}>
+                    No models match the current filters.
+                  </td>
                 </tr>
               )}
             </tbody>
