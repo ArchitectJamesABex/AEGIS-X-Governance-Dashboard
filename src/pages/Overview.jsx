@@ -4,6 +4,7 @@ import {
   complianceFrameworks, riskDistribution, risks, models, auditLog,
 } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
+import HoverTooltip from '../components/HoverTooltip'
 import { exportOverviewPDF } from '../utils/exportUtils'
 
 // ── Smooth number animation hook ──────────────────────────────────────────────
@@ -595,30 +596,69 @@ export default function Overview() {
         </div>
 
         <div className="lg:col-span-3 grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <LiveKpiCard
-            label="Open Risks" value={openRisks} sub="Require immediate action"
-            valueColor="#f87171" iconBg="rgba(239,68,68,0.08)"
-            icon={<svg className="w-5 h-5" fill="none" stroke="#f87171" strokeWidth="1.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>}
-          />
-          <LiveKpiCard
-            label="High-Risk Models" value={highRiskModels} sub="Active, unretired systems"
-            valueColor="#fbbf24" iconBg="rgba(245,158,11,0.08)"
-            icon={<svg className="w-5 h-5" fill="none" stroke="#fbbf24" strokeWidth="1.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" /></svg>}
-          />
-          <LiveKpiCard
-            label="Pending Reviews" value={pendingReviews} sub={`${activeModels} models fully active`}
-            valueColor="#00d4ff" iconBg="rgba(0,212,255,0.08)"
-            icon={<svg className="w-5 h-5" fill="none" stroke="#00d4ff" strokeWidth="1.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-          />
-          <LiveKpiCard
-            label="Active Models" value={activeModels} sub="In production systems"
-            valueColor="#a78bfa" iconBg="rgba(139,92,246,0.08)"
-            icon={<svg className="w-5 h-5" fill="none" stroke="#a78bfa" strokeWidth="1.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" /></svg>}
-          />
+          <HoverTooltip
+            title="Open Risks"
+            items={risks.filter(r => r.status === 'Open').map(r => ({
+              id: r.id,
+              label: r.description.length > 40 ? r.description.slice(0, 40) + '…' : r.description,
+              badge: r.severity,
+            }))}
+          >
+            <LiveKpiCard
+              label="Open Risks" value={openRisks} sub="Require immediate action"
+              valueColor="#f87171" iconBg="rgba(239,68,68,0.08)"
+              icon={<svg className="w-5 h-5" fill="none" stroke="#f87171" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>}
+            />
+          </HoverTooltip>
+
+          <HoverTooltip
+            title="High Risk Models"
+            items={models.filter(m => m.riskTier === 'High').map(m => ({
+              label: m.name,
+              badge: m.riskTier,
+              sub: m.owner,
+            }))}
+          >
+            <LiveKpiCard
+              label="High-Risk Models" value={highRiskModels} sub="Active, unretired systems"
+              valueColor="#fbbf24" iconBg="rgba(245,158,11,0.08)"
+              icon={<svg className="w-5 h-5" fill="none" stroke="#fbbf24" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" /></svg>}
+            />
+          </HoverTooltip>
+
+          <HoverTooltip
+            title="Pending Reviews"
+            items={models.filter(m => m.status === 'Under Review').map(m => ({
+              label: m.name,
+              badge: m.status,
+              detail: m.lastAudit,
+            }))}
+          >
+            <LiveKpiCard
+              label="Pending Reviews" value={pendingReviews} sub={`${activeModels} models fully active`}
+              valueColor="#00d4ff" iconBg="rgba(0,212,255,0.08)"
+              icon={<svg className="w-5 h-5" fill="none" stroke="#00d4ff" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+            />
+          </HoverTooltip>
+
+          <HoverTooltip
+            title="Active Models"
+            items={models.filter(m => m.status === 'Active').map(m => ({
+              label: m.name,
+              badge: m.riskTier,
+              sub: m.department,
+            }))}
+          >
+            <LiveKpiCard
+              label="Active Models" value={activeModels} sub="In production systems"
+              valueColor="#a78bfa" iconBg="rgba(139,92,246,0.08)"
+              icon={<svg className="w-5 h-5" fill="none" stroke="#a78bfa" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" /></svg>}
+            />
+          </HoverTooltip>
         </div>
       </div>
 
