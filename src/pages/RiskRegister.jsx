@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { risks } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
+import HoverTooltip from '../components/HoverTooltip'
 import { exportRisksCSV } from '../utils/exportUtils'
 
 const SEVERITY_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 }
@@ -118,18 +119,61 @@ export default function RiskRegister() {
       {/* Stat cards — 2 cols mobile, 3 cols sm, 5 cols desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
         {[
-          { label: 'Total Risks', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
-          { label: 'Open', value: counts.open, color: '#f87171', glow: 'rgba(239,68,68,0.3)' },
-          { label: 'Critical', value: counts.critical, color: '#fca5a5', glow: 'rgba(239,68,68,0.4)' },
-          { label: 'Mitigating', value: counts.mitigating, color: '#fbbf24', glow: 'rgba(245,158,11,0.3)' },
-          { label: 'Resolved', value: counts.resolved, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
+          {
+            label: 'Total Risks', value: counts.total,
+            color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)',
+            tooltip: {
+              title: 'All Risks · Top by Severity',
+              items: [...risks]
+                .sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity])
+                .map(r => ({ id: r.id, label: r.description, badge: r.severity })),
+            },
+          },
+          {
+            label: 'Open', value: counts.open,
+            color: '#f87171', glow: 'rgba(239,68,68,0.3)',
+            tooltip: {
+              title: 'Open Risks',
+              items: risks.filter(r => r.status === 'Open')
+                .map(r => ({ id: r.id, label: r.owner, detail: r.dueDate })),
+            },
+          },
+          {
+            label: 'Critical', value: counts.critical,
+            color: '#fca5a5', glow: 'rgba(239,68,68,0.4)',
+            tooltip: {
+              title: 'Critical Risks',
+              items: risks.filter(r => r.severity === 'Critical')
+                .map(r => ({ id: r.id, label: r.description, sub: r.owner })),
+            },
+          },
+          {
+            label: 'Mitigating', value: counts.mitigating,
+            color: '#fbbf24', glow: 'rgba(245,158,11,0.3)',
+            tooltip: {
+              title: 'Mitigating Risks',
+              items: risks.filter(r => r.status === 'Mitigating')
+                .map(r => ({ id: r.id, label: r.category, sub: r.owner })),
+            },
+          },
+          {
+            label: 'Resolved', value: counts.resolved,
+            color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)',
+            tooltip: {
+              title: 'Resolved Risks',
+              items: risks.filter(r => r.status === 'Resolved')
+                .map(r => ({ id: r.id, label: r.description, sub: r.owner })),
+            },
+          },
         ].map(s => (
-          <div key={s.label} className="glass-panel rounded-xl px-4 py-3 text-center">
-            <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
-              {s.value}
+          <HoverTooltip key={s.label} title={s.tooltip.title} items={s.tooltip.items}>
+            <div className="glass-panel rounded-xl px-4 py-3 text-center" style={{ cursor: 'default' }}>
+              <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
+                {s.value}
+              </div>
+              <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
             </div>
-            <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
-          </div>
+          </HoverTooltip>
         ))}
       </div>
 

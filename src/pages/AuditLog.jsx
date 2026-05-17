@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { auditLog } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
+import HoverTooltip from '../components/HoverTooltip'
 import { exportAuditCSV } from '../utils/exportUtils'
 
 const TYPE_META = {
@@ -86,17 +87,70 @@ export default function AuditLog() {
       {/* Summary stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
-          { label: 'Total Events', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
-          { label: 'Pass / Approved', value: counts.pass, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
-          { label: 'Warnings', value: counts.warning, color: '#fbbf24', glow: 'rgba(245,158,11,0.3)' },
-          { label: 'Flags / Incidents', value: counts.flag, color: '#f87171', glow: 'rgba(239,68,68,0.3)' },
+          {
+            label: 'Total Events', value: counts.total,
+            color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)',
+            tooltip: {
+              title: '5 Most Recent Events',
+              items: auditLog.slice(0, 5).map(e => ({
+                label: e.type,
+                sub: e.system,
+                badge: e.outcome,
+              })),
+            },
+          },
+          {
+            label: 'Pass / Approved', value: counts.pass,
+            color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)',
+            tooltip: {
+              title: 'Passed & Approved',
+              items: auditLog
+                .filter(e => e.outcome === 'Pass' || e.outcome === 'Approved' || e.outcome === 'Resolved')
+                .slice(0, 5)
+                .map(e => ({
+                  label: e.system,
+                  badge: e.outcome,
+                  detail: new Date(e.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                })),
+            },
+          },
+          {
+            label: 'Warnings', value: counts.warning,
+            color: '#fbbf24', glow: 'rgba(245,158,11,0.3)',
+            tooltip: {
+              title: 'Warning Events',
+              items: auditLog
+                .filter(e => e.outcome === 'Warning')
+                .map(e => ({
+                  label: e.system,
+                  sub: e.actor,
+                  detail: new Date(e.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                })),
+            },
+          },
+          {
+            label: 'Flags / Incidents', value: counts.flag,
+            color: '#f87171', glow: 'rgba(239,68,68,0.3)',
+            tooltip: {
+              title: 'Flagged Incidents',
+              items: auditLog
+                .filter(e => e.outcome === 'Flag')
+                .map(e => ({
+                  label: e.system,
+                  sub: e.actor,
+                  detail: e.details,
+                })),
+            },
+          },
         ].map(s => (
-          <div key={s.label} className="glass-panel rounded-xl px-4 py-3 text-center">
-            <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
-              {s.value}
+          <HoverTooltip key={s.label} title={s.tooltip.title} items={s.tooltip.items}>
+            <div className="glass-panel rounded-xl px-4 py-3 text-center" style={{ cursor: 'default' }}>
+              <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
+                {s.value}
+              </div>
+              <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
             </div>
-            <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
-          </div>
+          </HoverTooltip>
         ))}
       </div>
 

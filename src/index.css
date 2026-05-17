@@ -277,6 +277,62 @@ select option {
   animation: chart-ring-pulse 2s ease-out infinite;
 }
 
+/* ── Hover tooltip positioning ───────────────────────────────────────────────── */
+.hover-tooltip-panel {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 0;
+  z-index: 9999;
+  width: 280px;
+}
+
+/* Caret pointing left ◁ (tooltip is right of card) */
+.hover-tooltip-caret-border {
+  position: absolute;
+  left: -8px;
+  top: 14px;
+  width: 0; height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid rgba(0, 212, 255, 0.2);
+}
+.hover-tooltip-caret-fill {
+  position: absolute;
+  left: -6px;
+  top: 15px;
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid #06080f;
+}
+
+/* Mobile: tooltip below the card */
+@media (max-width: 767px) {
+  .hover-tooltip-panel {
+    left: 0;
+    top: calc(100% + 8px);
+    width: 260px;
+    max-width: calc(100vw - 40px);
+  }
+  /* Caret pointing up △ (tooltip is below card) */
+  .hover-tooltip-caret-border {
+    left: 14px;
+    top: -8px;
+    border-top: none;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+    border-bottom: 8px solid rgba(0, 212, 255, 0.2);
+  }
+  .hover-tooltip-caret-fill {
+    left: 15px;
+    top: -6px;
+    border-top: none;
+    border-right: 7px solid transparent;
+    border-left: 7px solid transparent;
+    border-bottom: 7px solid #06080f;
+  }
+}
+
 /* ── Table rows ──────────────────────────────────────────────────────────────── */
 .data-row {
   border-bottom: 1px solid rgba(0, 212, 255, 0.05);

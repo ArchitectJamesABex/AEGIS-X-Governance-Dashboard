@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { models } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
+import HoverTooltip from '../components/HoverTooltip'
 import { exportModelsCSV } from '../utils/exportUtils'
 
 function MobileModelCard({ m }) {
@@ -94,18 +95,59 @@ export default function ModelInventory() {
       {/* Stat cards — 2 cols mobile, 3 cols sm, 5 cols desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
         {[
-          { label: 'Total Models', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
-          { label: 'Active', value: counts.active, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
-          { label: 'Under Review', value: counts.review, color: '#67e8f9', glow: 'rgba(0,212,255,0.3)' },
-          { label: 'Retired', value: counts.retired, color: '#94a3b8', glow: 'rgba(148,163,184,0.2)' },
-          { label: 'High Risk', value: counts.high, color: '#f87171', glow: 'rgba(239,68,68,0.3)' },
+          {
+            label: 'Total Models', value: counts.total,
+            color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)',
+            tooltip: {
+              title: 'All Registered Models',
+              items: models.map(m => ({ label: m.name, badge: m.riskTier })),
+            },
+          },
+          {
+            label: 'Active', value: counts.active,
+            color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)',
+            tooltip: {
+              title: 'Active Models',
+              items: models.filter(m => m.status === 'Active')
+                .map(m => ({ label: m.name, sub: m.department })),
+            },
+          },
+          {
+            label: 'Under Review', value: counts.review,
+            color: '#67e8f9', glow: 'rgba(0,212,255,0.3)',
+            tooltip: {
+              title: 'Under Review',
+              items: models.filter(m => m.status === 'Under Review')
+                .map(m => ({ label: m.name, detail: m.lastAudit })),
+            },
+          },
+          {
+            label: 'Retired', value: counts.retired,
+            color: '#94a3b8', glow: 'rgba(148,163,184,0.2)',
+            tooltip: {
+              title: 'Retired Models',
+              items: models.filter(m => m.status === 'Retired')
+                .map(m => ({ label: m.name, sub: m.owner })),
+            },
+          },
+          {
+            label: 'High Risk', value: counts.high,
+            color: '#f87171', glow: 'rgba(239,68,68,0.3)',
+            tooltip: {
+              title: 'High Risk Models',
+              items: models.filter(m => m.riskTier === 'High')
+                .map(m => ({ label: m.name, sub: m.owner })),
+            },
+          },
         ].map(s => (
-          <div key={s.label} className="glass-panel rounded-xl px-4 py-3 text-center">
-            <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
-              {s.value}
+          <HoverTooltip key={s.label} title={s.tooltip.title} items={s.tooltip.items}>
+            <div className="glass-panel rounded-xl px-4 py-3 text-center" style={{ cursor: 'default' }}>
+              <div style={{ fontSize: '26px', fontWeight: 700, color: s.color, textShadow: `0 0 12px ${s.glow}` }}>
+                {s.value}
+              </div>
+              <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
             </div>
-            <div style={{ color: '#8899bb', fontSize: '11px', marginTop: '3px' }}>{s.label}</div>
-          </div>
+          </HoverTooltip>
         ))}
       </div>
 
