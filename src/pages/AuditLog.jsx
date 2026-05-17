@@ -61,9 +61,9 @@ export default function AuditLog() {
   }
 
   return (
-    <div className="p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="p-4 sm:p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
           <h1 style={{ color: '#f0f4ff', fontSize: '18px', fontWeight: 700, letterSpacing: '0.5px' }}>
             Audit Log
@@ -84,7 +84,7 @@ export default function AuditLog() {
       </div>
 
       {/* Summary stat cards */}
-      <div className="grid grid-cols-4 gap-3 mb-5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
           { label: 'Total Events', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
           { label: 'Pass / Approved', value: counts.pass, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
@@ -102,7 +102,7 @@ export default function AuditLog() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="relative flex-1 min-w-48 max-w-xs">
+        <div className="relative w-full sm:flex-1 sm:min-w-40 sm:max-w-xs">
           <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#8899bb' }}
             fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -152,7 +152,7 @@ export default function AuditLog() {
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b', opacity: 0.7 }} />
             <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', opacity: 0.7 }} />
           </div>
-          <span style={{ color: 'rgba(136,153,187,0.5)', fontSize: '11px', marginLeft: '6px' }} className="mono">
+          <span style={{ color: 'rgba(136,153,187,0.5)', fontSize: '11px', marginLeft: '6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="mono">
             aegis-x :: audit-stream :: {new Date().toISOString().slice(0, 19)}Z
           </span>
         </div>

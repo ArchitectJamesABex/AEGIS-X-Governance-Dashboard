@@ -23,7 +23,7 @@ function OrbitalRing({ score }) {
     <div className="flex flex-col items-center" style={{ '--ring-color': color }}>
       <svg
         viewBox="0 0 200 200"
-        className="w-52 h-52 orbital-ring-svg"
+        className="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 orbital-ring-svg"
         style={{ '--ring-color': color }}
       >
         <defs>
@@ -227,9 +227,9 @@ export default function Overview() {
   const recentEvents = auditLog.slice(0, 6)
 
   return (
-    <div className="p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="p-4 sm:p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
           <h1 style={{ color: '#f0f4ff', fontSize: '18px', fontWeight: 700, letterSpacing: '0.5px' }}>
             Governance Overview
@@ -269,7 +269,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-4">
           <KpiCard
             label="Open Risks"
             value={openRisks}
@@ -302,7 +302,7 @@ export default function Overview() {
         <h2 style={{ color: 'rgba(0,212,255,0.45)', fontSize: '10px', fontWeight: 600, letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: '10px' }}>
           Compliance Frameworks
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {complianceFrameworks.map(fw => <FrameworkCard key={fw.id} fw={fw} />)}
         </div>
       </div>

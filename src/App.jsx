@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Overview from './pages/Overview'
 import ModelInventory from './pages/ModelInventory'
@@ -49,14 +49,40 @@ function Starfield() {
 }
 
 export default function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
     <BrowserRouter>
       <div style={{ background: '#050914', position: 'relative' }} className="flex h-screen overflow-hidden">
         <Starfield />
         <div className="horizon-glow" />
         <div style={{ position: 'relative', zIndex: 10 }} className="flex w-full h-full">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto" style={{ background: 'transparent' }}>
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+          {/* Hamburger button — fixed top-left, mobile only */}
+          <button
+            className="lg:hidden flex items-center justify-center"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open navigation"
+            style={{
+              position: 'fixed', top: '12px', left: '12px', zIndex: 60,
+              width: '44px', height: '44px',
+              borderRadius: '10px',
+              background: '#06080f',
+              border: '1px solid rgba(0, 212, 255, 0.25)',
+              boxShadow: '0 0 12px rgba(0, 212, 255, 0.15), 0 0 0 1px rgba(0, 212, 255, 0.08)',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <line x1="1" y1="4" x2="17" y2="4" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="1" y1="9" x2="17" y2="9" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="1" y1="14" x2="17" y2="14" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+
+          <main className="flex-1 overflow-y-auto pt-14 lg:pt-0" style={{ background: 'transparent' }}>
             <Routes>
               <Route path="/" element={<Navigate to="/overview" replace />} />
               <Route path="/overview" element={<Overview />} />

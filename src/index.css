@@ -159,6 +159,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 7px 14px;
+  min-height: 44px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
@@ -216,6 +217,7 @@ select, input {
   border: 1px solid rgba(0, 212, 255, 0.1) !important;
   color: #c8d8f0 !important;
   transition: border-color 150ms ease, box-shadow 150ms ease;
+  min-height: 44px;
 }
 
 select:focus, input:focus {

@@ -8,6 +8,56 @@ const SEVERITY_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 }
 const likelihoodColor = l =>
   l === 'High' ? '#f87171' : l === 'Medium' ? '#fbbf24' : '#6ee7b7'
 
+const severityBorderColor = s =>
+  s === 'Critical' ? '#ef4444' : s === 'High' ? '#f87171' : s === 'Medium' ? '#f59e0b' : '#6ee7b7'
+
+function MobileRiskCard({ r }) {
+  return (
+    <div
+      className="glass-panel rounded-xl p-4 mb-3"
+      style={{ borderLeft: `2px solid ${severityBorderColor(r.severity)}` }}
+    >
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <span className="mono" style={{ color: 'rgba(0,212,255,0.5)', fontSize: '11px' }}>{r.id}</span>
+        <div className="flex gap-1.5 flex-shrink-0">
+          <StatusBadge status={r.severity} />
+          <StatusBadge status={r.status} />
+        </div>
+      </div>
+      <p style={{ color: '#c8d8f0', fontSize: '13px', lineHeight: '1.5', marginBottom: '10px' }}>{r.description}</p>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+        <div>
+          <div style={{ color: 'rgba(0,212,255,0.4)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>Category</div>
+          <div style={{
+            display: 'inline-block', color: '#8899bb', fontSize: '11px',
+            background: 'rgba(0,212,255,0.05)',
+            border: '1px solid rgba(0,212,255,0.1)',
+            borderRadius: '5px', padding: '1px 7px',
+          }}>{r.category}</div>
+        </div>
+        <div>
+          <div style={{ color: 'rgba(0,212,255,0.4)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>Likelihood</div>
+          <div style={{ color: likelihoodColor(r.likelihood), fontWeight: 600, fontSize: '12px' }}>{r.likelihood}</div>
+        </div>
+        <div>
+          <div style={{ color: 'rgba(0,212,255,0.4)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>Owner</div>
+          <div style={{ color: '#8899bb', fontSize: '12px' }}>{r.owner}</div>
+        </div>
+        <div>
+          <div style={{ color: 'rgba(0,212,255,0.4)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>Due Date</div>
+          <div className="mono" style={{ color: '#8899bb', fontSize: '11px' }}>{r.dueDate}</div>
+        </div>
+        {r.relatedModel && (
+          <div className="col-span-2">
+            <div style={{ color: 'rgba(0,212,255,0.4)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>Related Model</div>
+            <div className="mono" style={{ color: 'rgba(0,212,255,0.7)', fontSize: '11px' }}>{r.relatedModel}</div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function RiskRegister() {
   const [filterSeverity, setFilterSeverity] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
@@ -38,9 +88,9 @@ export default function RiskRegister() {
   }
 
   return (
-    <div className="p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="p-4 sm:p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
           <h1 style={{ color: '#f0f4ff', fontSize: '18px', fontWeight: 700, letterSpacing: '0.5px' }}>
             Risk Register
@@ -49,7 +99,7 @@ export default function RiskRegister() {
             {risks.length} identified risks across all AI systems
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="flex flex-wrap items-center gap-2">
           <button className="btn-mission" onClick={() => exportRisksCSV(filtered)}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -65,8 +115,8 @@ export default function RiskRegister() {
         </div>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-5 gap-3 mb-5">
+      {/* Stat cards — 2 cols mobile, 3 cols sm, 5 cols desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
         {[
           { label: 'Total Risks', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
           { label: 'Open', value: counts.open, color: '#f87171', glow: 'rgba(239,68,68,0.3)' },
@@ -85,7 +135,7 @@ export default function RiskRegister() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="relative flex-1 min-w-48 max-w-xs">
+        <div className="relative w-full sm:flex-1 sm:min-w-40 sm:max-w-xs">
           <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#8899bb' }}
             fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -130,8 +180,20 @@ export default function RiskRegister() {
         </span>
       </div>
 
-      {/* Table */}
-      <div className="glass-panel rounded-xl overflow-hidden">
+      {/* Mobile card layout */}
+      <div className="block md:hidden">
+        {filtered.length > 0
+          ? filtered.map(r => <MobileRiskCard key={r.id} r={r} />)
+          : (
+            <div className="glass-panel rounded-xl p-12 text-center" style={{ color: 'rgba(136,153,187,0.4)' }}>
+              No risks match the current filters.
+            </div>
+          )
+        }
+      </div>
+
+      {/* Desktop table layout */}
+      <div className="hidden md:block glass-panel rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse' }}>
             <thead>

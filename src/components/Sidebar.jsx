@@ -39,89 +39,111 @@ const navItems = [
   },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   return (
-    <aside style={{
-      width: '236px',
-      flexShrink: 0,
-      background: '#06080f',
-      borderRight: '1px solid rgba(0, 212, 255, 0.06)',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-      zIndex: 20,
-    }}>
-      {/* Branding */}
-      <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(0, 212, 255, 0.06)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Orbital ring logo */}
-          <div style={{ flexShrink: 0 }}>
-            <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-              <circle cx="17" cy="17" r="13" stroke="rgba(0,212,255,0.12)" strokeWidth="1.5" />
-              <circle cx="17" cy="17" r="9"
-                stroke="#00d4ff" strokeWidth="1.5"
-                strokeDasharray="18.8 37.7"
-                strokeLinecap="round"
-                transform="rotate(-90 17 17)"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(0,212,255,0.9))' }}
-              />
-              <circle cx="17" cy="8" r="2" fill="#00d4ff"
-                style={{ filter: 'drop-shadow(0 0 4px #00d4ff)' }} />
-              <circle cx="17" cy="17" r="2.5" fill="rgba(0,212,255,0.15)" stroke="rgba(0,212,255,0.3)" strokeWidth="1" />
-            </svg>
-          </div>
-          <div>
-            <div style={{ color: '#f0f4ff', fontWeight: 700, fontSize: '13px', letterSpacing: '3px' }}>AEGIS-X</div>
-            <div style={{ color: 'rgba(0, 212, 255, 0.45)', fontSize: '9.5px', letterSpacing: '1.5px', marginTop: '1px' }}>
-              GOVERNANCE CONSOLE
+    <>
+      {/* Backdrop overlay — mobile only */}
+      <div
+        className="fixed inset-0 lg:hidden transition-opacity duration-300"
+        style={{
+          background: 'rgba(0, 0, 0, 0.6)',
+          zIndex: 40,
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? 'auto' : 'none',
+        }}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Sidebar drawer */}
+      <aside
+        className={[
+          'fixed lg:relative',
+          'inset-y-0 lg:inset-y-auto',
+          'left-0 lg:left-auto',
+          'flex flex-col flex-shrink-0',
+          'transition-transform duration-300 ease-in-out',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        ].join(' ')}
+        style={{
+          width: '236px',
+          background: '#06080f',
+          borderRight: '1px solid rgba(0, 212, 255, 0.06)',
+          zIndex: 50,
+        }}
+      >
+        {/* Branding */}
+        <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(0, 212, 255, 0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ flexShrink: 0 }}>
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <circle cx="17" cy="17" r="13" stroke="rgba(0,212,255,0.12)" strokeWidth="1.5" />
+                <circle cx="17" cy="17" r="9"
+                  stroke="#00d4ff" strokeWidth="1.5"
+                  strokeDasharray="18.8 37.7"
+                  strokeLinecap="round"
+                  transform="rotate(-90 17 17)"
+                  style={{ filter: 'drop-shadow(0 0 4px rgba(0,212,255,0.9))' }}
+                />
+                <circle cx="17" cy="8" r="2" fill="#00d4ff"
+                  style={{ filter: 'drop-shadow(0 0 4px #00d4ff)' }} />
+                <circle cx="17" cy="17" r="2.5" fill="rgba(0,212,255,0.15)" stroke="rgba(0,212,255,0.3)" strokeWidth="1" />
+              </svg>
+            </div>
+            <div>
+              <div style={{ color: '#f0f4ff', fontWeight: 700, fontSize: '13px', letterSpacing: '3px' }}>AEGIS-X</div>
+              <div style={{ color: 'rgba(0, 212, 255, 0.45)', fontSize: '9.5px', letterSpacing: '1.5px', marginTop: '1px' }}>
+                GOVERNANCE CONSOLE
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: '12px 8px', paddingTop: '16px' }}>
-        <p style={{
-          padding: '0 12px',
-          paddingBottom: '8px',
-          color: 'rgba(0, 212, 255, 0.3)',
-          fontSize: '9.5px',
-          fontWeight: 600,
-          letterSpacing: '2.5px',
-          textTransform: 'uppercase',
-        }}>
-          Navigation
-        </p>
-        {navItems.map(item => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `nav-item-base${isActive ? ' nav-item-active' : ''}`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span className="nav-icon" style={{ transition: 'all 150ms ease', color: isActive ? '#00d4ff' : '#4a5a76' }}>
-                  {item.icon}
-                </span>
-                <span style={{ fontWeight: isActive ? 500 : 400 }}>{item.label}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '12px 8px', paddingTop: '16px' }}>
+          <p style={{
+            padding: '0 12px',
+            paddingBottom: '8px',
+            color: 'rgba(0, 212, 255, 0.3)',
+            fontSize: '9.5px',
+            fontWeight: 600,
+            letterSpacing: '2.5px',
+            textTransform: 'uppercase',
+          }}>
+            Navigation
+          </p>
+          {navItems.map(item => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `nav-item-base${isActive ? ' nav-item-active' : ''}`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <span className="nav-icon" style={{ transition: 'all 150ms ease', color: isActive ? '#00d4ff' : '#4a5a76' }}>
+                    {item.icon}
+                  </span>
+                  <span style={{ fontWeight: isActive ? 500 : 400 }}>{item.label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
 
-      {/* Footer */}
-      <div style={{ padding: '14px 16px', borderTop: '1px solid rgba(0, 212, 255, 0.06)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-          <span className="status-dot-live" />
-          <span style={{ color: '#10b981', fontSize: '11px', fontWeight: 500 }}>All Systems Operational</span>
+        {/* Footer */}
+        <div style={{ padding: '14px 16px', borderTop: '1px solid rgba(0, 212, 255, 0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span className="status-dot-live" />
+            <span style={{ color: '#10b981', fontSize: '11px', fontWeight: 500 }}>All Systems Operational</span>
+          </div>
+          <div style={{ color: 'rgba(136, 153, 187, 0.35)', fontSize: '10px', marginTop: '4px' }}>
+            v2.4.1 · Last sync 2 min ago
+          </div>
         </div>
-        <div style={{ color: 'rgba(136, 153, 187, 0.35)', fontSize: '10px', marginTop: '4px' }}>
-          v2.4.1 · Last sync 2 min ago
-        </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }

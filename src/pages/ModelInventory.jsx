@@ -3,6 +3,42 @@ import { models } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
 import { exportModelsCSV } from '../utils/exportUtils'
 
+function MobileModelCard({ m }) {
+  return (
+    <div
+      className="glass-panel rounded-xl p-4 mb-3"
+      style={{ opacity: m.status === 'Retired' ? 0.55 : 1 }}
+    >
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div style={{ minWidth: 0 }}>
+          <div style={{ color: '#f0f4ff', fontWeight: 600, fontSize: '14px' }}>{m.name}</div>
+          <div className="mono" style={{ color: 'rgba(0,212,255,0.5)', fontSize: '11px', marginTop: '2px' }}>{m.id}</div>
+        </div>
+        <div className="flex gap-1.5 flex-shrink-0">
+          <StatusBadge status={m.riskTier} />
+          <StatusBadge status={m.status} />
+        </div>
+      </div>
+      <div style={{ color: '#8899bb', fontSize: '12px', marginBottom: '10px', lineHeight: '1.4' }}>{m.useCase}</div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+        {[
+          { label: 'Vendor', value: m.vendor, color: '#c8d8f0', mono: false },
+          { label: 'Owner', value: m.owner, color: '#c8d8f0', mono: false },
+          { label: 'Department', value: m.department, color: '#8899bb', mono: false },
+          { label: 'Last Audit', value: m.lastAudit, color: '#8899bb', mono: true },
+        ].map(({ label, value, color, mono }) => (
+          <div key={label}>
+            <div style={{ color: 'rgba(0,212,255,0.4)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2px' }}>
+              {label}
+            </div>
+            <div className={mono ? 'mono' : ''} style={{ color, fontSize: '12px' }}>{value}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function ModelInventory() {
   const [filterRisk, setFilterRisk] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
@@ -28,9 +64,9 @@ export default function ModelInventory() {
   }
 
   return (
-    <div className="p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="p-4 sm:p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
           <h1 style={{ color: '#f0f4ff', fontSize: '18px', fontWeight: 700, letterSpacing: '0.5px' }}>
             Model Inventory
@@ -39,7 +75,7 @@ export default function ModelInventory() {
             {models.length} registered AI systems across all departments
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="flex flex-wrap items-center gap-2">
           <button className="btn-mission" onClick={() => exportModelsCSV(filtered)}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -55,8 +91,8 @@ export default function ModelInventory() {
         </div>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-5 gap-3 mb-5">
+      {/* Stat cards — 2 cols mobile, 3 cols sm, 5 cols desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
         {[
           { label: 'Total Models', value: counts.total, color: '#f0f4ff', glow: 'rgba(240,244,255,0.2)' },
           { label: 'Active', value: counts.active, color: '#6ee7b7', glow: 'rgba(16,185,129,0.3)' },
@@ -75,7 +111,7 @@ export default function ModelInventory() {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="relative flex-1 min-w-48 max-w-xs">
+        <div className="relative w-full sm:flex-1 sm:min-w-40 sm:max-w-xs">
           <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#8899bb' }}
             fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -113,8 +149,20 @@ export default function ModelInventory() {
         </span>
       </div>
 
-      {/* Table */}
-      <div className="glass-panel rounded-xl overflow-hidden">
+      {/* Mobile card layout */}
+      <div className="block md:hidden">
+        {filtered.length > 0
+          ? filtered.map(m => <MobileModelCard key={m.id} m={m} />)
+          : (
+            <div className="glass-panel rounded-xl p-12 text-center" style={{ color: 'rgba(136,153,187,0.4)' }}>
+              No models match the current filters.
+            </div>
+          )
+        }
+      </div>
+
+      {/* Desktop table layout */}
+      <div className="hidden md:block glass-panel rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse' }}>
             <thead>
