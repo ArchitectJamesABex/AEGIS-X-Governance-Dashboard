@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { risks } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
+import { exportRisksCSV } from '../utils/exportUtils'
 
 const SEVERITY_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 }
 
@@ -44,12 +45,22 @@ export default function RiskRegister() {
           <h1 className="text-xl font-bold text-slate-100">Risk Register</h1>
           <p className="text-slate-500 text-sm mt-0.5">{risks.length} identified risks across all AI systems</p>
         </div>
-        <button className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 rounded-lg px-3 py-1.5 text-sm transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Log New Risk
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => exportRisksCSV(filtered)}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Export CSV
+          </button>
+          <button className="flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 rounded-lg px-3 py-1.5 text-sm transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Log New Risk
+          </button>
+        </div>
       </div>
 
       {/* Summary stats */}

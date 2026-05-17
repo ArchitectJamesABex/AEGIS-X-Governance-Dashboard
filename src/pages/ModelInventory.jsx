@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { models } from '../data/mockData'
 import StatusBadge from '../components/StatusBadge'
+import { exportModelsCSV } from '../utils/exportUtils'
 
 export default function ModelInventory() {
   const [filterRisk, setFilterRisk] = useState('')
@@ -34,12 +35,22 @@ export default function ModelInventory() {
           <h1 className="text-xl font-bold text-slate-100">Model Inventory</h1>
           <p className="text-slate-500 text-sm mt-0.5">{models.length} registered AI systems across all departments</p>
         </div>
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Register Model
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => exportModelsCSV(filtered)}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Export CSV
+          </button>
+          <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-3 py-1.5 text-sm transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Register Model
+          </button>
+        </div>
       </div>
 
       {/* Summary stats */}
