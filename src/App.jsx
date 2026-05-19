@@ -92,6 +92,7 @@ export default function App() {
               <Route path="/audit" element={<AuditLog />} />
             </Routes>
           </main>
+          <AegisGuide />
         </div>
       </div>
     </BrowserRouter>
