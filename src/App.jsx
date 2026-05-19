@@ -5,6 +5,7 @@ import Overview from './pages/Overview'
 import ModelInventory from './pages/ModelInventory'
 import RiskRegister from './pages/RiskRegister'
 import AuditLog from './pages/AuditLog'
+import AegisGuide from './components/AegisGuide';
 
 function Starfield() {
   const stars = useMemo(() =>
