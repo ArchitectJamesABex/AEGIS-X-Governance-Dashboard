@@ -79,7 +79,7 @@ MetricBaselineTargetCross-account posture score (0–100)Not previously measured
 Video Walkthrough
 
 3-minute assignment walkthrough
-[Insert Google Drive link here after recording]
+[(https://drive.google.com/file/d/1XgO20dE5hxpjB_YQ1XZ86B5tKTXAmgsX/view)]
 Access: Anyone on the internet with the link can view
 
 
