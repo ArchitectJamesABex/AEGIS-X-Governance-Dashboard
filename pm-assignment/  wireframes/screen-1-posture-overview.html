@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen 1 — Posture Overview | AEGIS-X</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F6F8;color:#1A1A2E;font-size:13px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#fff;border-bottom:1px solid #E5E7EB}
+.logo{background:#185FA5;color:#B5D4F4;font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px}
+.nav{display:flex;gap:2px;margin-left:16px}
+.nav-item{font-size:12px;color:#6B7280;padding:5px 10px;border-radius:5px;cursor:pointer}
+.nav-item.active{background:#F3F4F6;color:#111827;font-weight:500}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.chip{display:flex;align-items:center;gap:5px;font-size:11px;border:1px solid #E5E7EB;border-radius:20px;padding:4px 10px;color:#6B7280;background:#fff}
+.btn{background:#185FA5;color:#fff;font-size:11px;font-weight:500;border:none;border-radius:5px;padding:5px 12px;cursor:pointer}
+.main{padding:16px 20px}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.page-title{font-size:15px;font-weight:600;color:#111827}
+.page-sub{font-size:11px;color:#6B7280;margin-top:3px}
+.filter-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.search{display:flex;align-items:center;gap:6px;border:1px solid #E5E7EB;border-radius:6px;padding:6px 10px;background:#fff;font-size:11px;color:#6B7280;flex:1;min-width:180px}
+.filter-chip{font-size:11px;border:1px solid #E5E7EB;border-radius:20px;padding:4px 10px;color:#6B7280;background:#fff}
+.filter-chip.on{border-color:#185FA5;color:#185FA5;background:#EFF6FF}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.m-card{background:#F9FAFB;border-radius:8px;padding:14px 16px;border:1px solid #F3F4F6}
+.m-label{font-size:10px;color:#6B7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;font-weight:500}
+.m-val{font-size:26px;font-weight:600;color:#111827}
+.m-val.crit{color:#A32D2D}.m-val.high{color:#854F0B}.m-val.med{color:#3B6D11}
+.m-delta{font-size:10px;margin-top:4px}
+.up{color:#A32D2D}.dn{color:#3B6D11}.flat{color:#9CA3AF}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:16px}
+.card-title{font-size:12px;font-weight:600;color:#111827;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em}
+.acct-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #F3F4F6;cursor:pointer}
+.acct-row:last-child{border-bottom:none}
+.acct-left{display:flex;align-items:center;gap:8px}
+.acct-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.aws{background:#FEF3C7;color:#92400E}
+.gcp{background:#DBEAFE;color:#1E40AF}
+.az{background:#EDE9FE;color:#5B21B6}
+.acct-name{font-size:12px;font-weight:500;color:#111827}
+.acct-id{font-size:10px;color:#9CA3AF;font-family:monospace}
+.acct-right{display:flex;align-items:center;gap:10px}
+.seg-wrap{display:flex;gap:3px}
+.seg{height:6px;border-radius:3px}
+.badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:8px;min-width:52px;text-align:center}
+.b-poor{background:#FEE2E2;color:#991B1B}
+.b-fair{background:#FEF3C7;color:#92400E}
+.b-good{background:#D1FAE5;color:#065F46}
+.bk-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #F3F4F6;cursor:pointer}
+.bk-row:last-child{border-bottom:none}
+.bk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.bk-lbl{font-size:11px;color:#374151;flex:1}
+.bk-track{width:100px;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden}
+.bk-fill{height:100%;border-radius:3px}
+.bk-num{font-size:11px;font-weight:600;color:#111827;min-width:24px;text-align:right}
+.annot{display:flex;align-items:flex-start;gap:6px;background:#FFFBEB;border:1px solid #FCD34D;border-radius:6px;padding:8px 10px;margin-top:12px}
+.annot-txt{font-size:10px;color:#78350F;line-height:1.5}
+.annot-txt strong{font-weight:600}
+.screen-tag{font-size:10px;color:#9CA3AF;text-align:center;padding:14px 0 4px;border-top:1px solid #F3F4F6;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:4px">
+    <div class="logo">AEGIS-X</div>
+    <div class="nav">
+      <div class="nav-item active">Posture</div>
+      <div class="nav-item">Alerts</div>
+      <div class="nav-item">IAM</div>
+      <div class="nav-item">Policies</div>
+      <div class="nav-item">Reports</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="chip">3 accounts connected</div>
+    <button class="btn">+ Add account</button>
+  </div>
+</div>
+<div class="main">
+  <div class="page-head">
+    <div>
+      <div class="page-title">Cloud posture overview</div>
+      <div class="page-sub">Last scanned 14 min ago &nbsp;·&nbsp; 3 accounts &nbsp;·&nbsp; AWS · GCP · Azure</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="chip">Last 7 days</div>
+      <button class="btn">Rescan now</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <div class="search">Search by resource, service, or rule…</div>
+    <div class="filter-chip on">All severities</div>
+    <div class="filter-chip">All providers</div>
+    <div class="filter-chip">All accounts</div>
+    <div class="filter-chip">All services</div>
+    <div class="filter-chip">Compliance: All</div>
+  </div>
+  <div class="metrics">
+    <div class="m-card">
+      <div class="m-label">Total misconfigs</div>
+      <div class="m-val">247</div>
+      <div class="m-delta up">↑ +18 since last scan</div>
+    </div>
+    <div class="m-card">
+      <div class="m-label">Critical</div>
+      <div class="m-val crit">34</div>
+      <div class="m-delta up">↑ +5 new</div>
+    </div>
+    <div class="m-card">
+      <div class="m-label">High</div>
+      <div class="m-val high">89</div>
+      <div class="m-delta flat">— No change</div>
+    </div>
+    <div class="m-card">
+      <div class="m-label">Medium / Low</div>
+      <div class="m-val med">124</div>
+      <div class="m-delta dn">↓ −7 resolved</div>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="card-title">Accounts at a glance</div>
+      <div class="acct-row">
+        <div class="acct-left">
+          <div class="acct-icon aws">AWS</div>
+          <div><div class="acct-name">Prod AWS</div><div class="acct-id">123456789012</div></div>
+        </div>
+        <div class="acct-right">
+          <div class="seg-wrap">
+            <div class="seg" style="width:28px;background:#DC2626"></div>
+            <div class="seg" style="width:42px;background:#F59E0B"></div>
+            <div class="seg" style="width:16px;background:#16A34A"></div>
+          </div>
+          <span class="badge b-poor">42 / 100</span>
+        </div>
+      </div>
+      <div class="acct-row">
+        <div class="acct-left">
+          <div class="acct-icon gcp">GCP</div>
+          <div><div class="acct-name">Dev GCP</div><div class="acct-id">gcp-dev-8842</div></div>
+        </div>
+        <div class="acct-right">
+          <div class="seg-wrap">
+            <div class="seg" style="width:10px;background:#DC2626"></div>
+            <div class="seg" style="width:24px;background:#F59E0B"></div>
+            <div class="seg" style="width:38px;background:#16A34A"></div>
+          </div>
+          <span class="badge b-fair">67 / 100</span>
+        </div>
+      </div>
+      <div class="acct-row">
+        <div class="acct-left">
+          <div class="acct-icon az">AZ</div>
+          <div><div class="acct-name">Staging Azure</div><div class="acct-id">a1b2c3d4-ef56</div></div>
+        </div>
+        <div class="acct-right">
+          <div class="seg-wrap">
+            <div class="seg" style="width:5px;background:#DC2626"></div>
+            <div class="seg" style="width:13px;background:#F59E0B"></div>
+            <div class="seg" style="width:50px;background:#16A34A"></div>
+          </div>
+          <span class="badge b-good">81 / 100</span>
+        </div>
+      </div>
+      <div class="annot">
+        <span style="color:#D97706;flex-shrink:0">⚠</span>
+        <div class="annot-txt"><strong>Annotation:</strong> Click any account row to drill into its filtered findings table. Posture score = weighted severity sum divided by max possible. Threshold alerts configurable in Settings.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Misconfigs by service category</div>
+      <div class="bk-row">
+        <div class="bk-dot" style="background:#DC2626"></div>
+        <div class="bk-lbl">IAM &amp; access control</div>
+        <div class="bk-track"><div class="bk-fill" style="width:75%;background:#DC2626"></div></div>
+        <div class="bk-num">86</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-dot" style="background:#F59E0B"></div>
+        <div class="bk-lbl">Storage &amp; data exposure</div>
+        <div class="bk-track"><div class="bk-fill" style="width:54%;background:#F59E0B"></div></div>
+        <div class="bk-num">62</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-dot" style="background:#B45309"></div>
+        <div class="bk-lbl">Network &amp; firewall rules</div>
+        <div class="bk-track"><div class="bk-fill" style="width:41%;background:#B45309"></div></div>
+        <div class="bk-num">47</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-dot" style="background:#2563EB"></div>
+        <div class="bk-lbl">Encryption &amp; key mgmt</div>
+        <div class="bk-track"><div class="bk-fill" style="width:28%;background:#2563EB"></div></div>
+        <div class="bk-num">32</div>
+      </div>
+      <div class="bk-row">
+        <div class="bk-dot" style="background:#16A34A"></div>
+        <div class="bk-lbl">Logging &amp; monitoring</div>
+        <div class="bk-track"><div class="bk-fill" style="width:17%;background:#16A34A"></div></div>
+        <div class="bk-num">20</div>
+      </div>
+      <div class="annot">
+        <span style="color:#D97706;flex-shrink:0">ℹ</span>
+        <div class="annot-txt"><strong>Annotation:</strong> Click any category row to filter the findings table to that service. Bar width = relative proportion of total misconfigs. Navigates to Screen 2 with filter pre-applied.</div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-tag">Screen 1 of 3 — Posture Overview &nbsp;·&nbsp; AEGIS-X Cloud Posture Dashboard &nbsp;·&nbsp; James A. Bex &nbsp;·&nbsp; PM Trainee Assignment</div>
+</div>
+</body>
+</html>
