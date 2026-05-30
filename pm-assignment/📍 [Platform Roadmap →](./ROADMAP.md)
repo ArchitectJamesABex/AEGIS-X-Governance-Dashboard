@@ -1,0 +1,152 @@
+# AEGIS-X Platform Roadmap
+
+> **Industry Trajectory: From AI Governance to Quantum-Safe Autonomous Compute**
+
+This roadmap is not a feature backlog. It reflects the structural progression of the AI governance market. AEGIS-X was architected ahead of this curve. Each phase corresponds to a regulatory and operational maturity threshold that enterprises will be forced to cross — reactively, or on a platform already built for it.
+
+---
+
+## Platform Phase Overview
+
+| Phase | Theme | Status | Horizon |
+|---|---|---|---|
+| Phase I | AI Governance Foundation | ✅ Done | Delivered — CSA Contribution |
+| Phase II | Enterprise Governance Platform | 🔵 In Progress | Now / Next 90 Days |
+| Phase III | Agentic Trust & Autonomous Oversight | ⬜ Not Started | Q3–Q4 2025 |
+| Phase IV | Quantum-Safe Governance Operations | ⬜ Not Started | 2026+ |
+
+---
+
+## Phase I — AI Governance Foundation
+**Status: Complete**
+
+The foundational governance architecture. Delivered to the Cloud Security Alliance and currently under enterprise expansion. Established the STAR CAR-D 20-domain compliance framework, OPA/Rego policy enforcement layer, and immutable audit logging infrastructure that all subsequent phases build on.
+
+**Key Deliverables:**
+- STAR CAR-D 20-domain AI compliance framework
+- OPA/Rego policy enforcement engine
+- Immutable tamper-evident audit log pipeline
+- CSA STAR for AI Working Group contribution (~80% of compliance-layer development)
+- GEN-SHIELD DevSecOps pipeline
+- cATO (Continuous Authorization to Operate) — reducing ATO timelines from months to days
+
+---
+
+## Phase II — Enterprise Governance Platform
+**Status: In Progress | This Repository**
+
+The current build. A live, centralized dashboard giving AI governance stakeholders real-time visibility into model health, risk tier, and regulatory compliance across the enterprise.
+
+**Industry Forcing Function:** EU AI Act enforcement began in 2024. GDPR fines for AI non-compliance reach 6% of global annual revenue. NIST AI RMF adoption is accelerating across federal contractors. Enterprises have no unified tool purpose-built for ML model governance — this is that tool.
+
+### NOW — Active Development
+
+| Item | Description | Status | Dependencies |
+|---|---|---|---|
+| Governance Health Score | Weighted algorithm: model coverage, documentation completeness, compliance status, audit findings | ✅ On Track | Phase I policy engine |
+| Live Risk Registry | Real-time risk tiers with severity IDs and ownership tracking | ✅ On Track | Model inventory API |
+| Regulatory Compliance Tracker | Live adherence: EU AI Act, GDPR, NIST AI RMF, SOC 2, ISO 42001, IEEE 7000 | ✅ On Track | Framework mapping layer |
+| Model Lifecycle Pipeline | Pending Review → Active → High-Risk → Retired state management | ✅ On Track | Model registry integration |
+| Audit Export Engine | One-click PDF and CSV for board decks and regulator handoffs | ✅ On Track | Immutable audit log |
+| Terminal Audit Feed | Streaming chronological governance event log with timestamped entries | ✅ On Track | — |
+| Full Mobile Responsiveness | Hamburger drawer, stacked KPI cards, 44px touch targets | ✅ On Track | — |
+
+### NEXT — Planned (Next 90 Days)
+
+| Item | Description | Priority | Dependencies |
+|---|---|---|---|
+| Approval Workflow Gates | Submit → Review → Approve before any model reaches production | P0 | RBAC layer |
+| RBAC & Role Separation | Elena / Marcus / Sarah / Auditor roles with field-level permissions | P0 | SSO/IdP integration |
+| Jira / ServiceNow Integration | Bidirectional sync — governance findings create and update tickets automatically | P1 | Approval workflows |
+| Real-Time Alerts | Slack / Teams notifications when governance score crosses threshold | P1 | Risk scoring engine |
+| Explainability Module | Auto-generate SHAP/LIME summary cards per model at review time | P2 | Model metadata API |
+| MLflow Webhook Connector | Pull model metadata directly from MLflow into governance registry | P2 | Model lifecycle pipeline |
+
+**Phase II Exit Criteria:**
+- 100% of deployed models have documented risk tier
+- Audit preparation time under 10 minutes
+- Zero high-risk models reach production without documented human review
+- Governance Health Score baseline established at 85/100
+
+---
+
+## Phase III — Agentic Trust Framework
+**Status: Not Started | Q3–Q4 2025**
+
+The inflection point. When AI stops being supervised and starts being autonomous.
+
+Enterprises deploying LLM agents, multi-agent orchestration pipelines, and autonomous decision systems cannot govern them with human-review workflows designed for static models. A model that acts is fundamentally different from a model that predicts. Phase II governance controls are necessary but insufficient for agentic systems.
+
+**Industry Forcing Function:** EU AI Act Article 14 mandates human oversight of high-risk AI systems. NIST AI RMF Govern function requires continuous monitoring of autonomous system behavior. Neither can be satisfied with dashboard visibility alone — they require infrastructure-layer policy enforcement at execution time.
+
+| Item | Description | Status | Dependencies |
+|---|---|---|---|
+| Twin Agent Consensus Layer | Dual-agent validation before autonomous action execution — no single agent acts unilaterally | Not Started | Phase II model registry |
+| Lifeguard Rescue Patterns | Automatic circuit breakers: detect agent drift, hallucination loops, and policy violations mid-execution | Not Started | Policy engine + telemetry |
+| Continuous Attestation | Real-time cryptographic proof that agent behavior matches declared policy at execution time | Not Started | Immutable audit log + signing infrastructure |
+| Agentic Risk Scoring | Dynamic risk tier recalculation as agent behavior evolves — static model cards are insufficient | Not Started | Phase II scoring algorithm |
+| Human-in-the-Loop Escalation | Threshold-triggered escalation with full context handoff to human oversight | Not Started | RBAC + notification layer |
+| CSA STAR for AI Alignment | Map all Phase III controls to CSA STAR for AI certification framework | Not Started | CSA working group deliverables |
+
+**Phase III Exit Criteria:**
+- Any autonomous agent deployment has cryptographic audit trail
+- No agent executes high-risk actions without real-time attestation
+- STAR for AI certification pathway fully documented and submitted
+
+---
+
+## Phase IV — Quantum-Safe Governance Operations
+**Status: Not Started | 2026+**
+
+The endpoint. Where this platform was always going.
+
+Classical cryptographic infrastructure underpinning AI governance — audit logs, attestation chains, policy signing, identity verification — is vulnerable to Harvest Now, Decrypt Later attacks already in progress by nation-state actors. Regulated industries operating AI at scale have a hard compliance deadline: post-quantum migration must begin before cryptographically relevant quantum computers arrive, not after.
+
+Phase IV is not a feature addition to Phase II. It is the reason the architecture was designed the way it was from the beginning.
+
+**Industry Forcing Function:** NIST finalized PQC standards in 2024 (CRYSTALS-Kyber, CRYSTALS-Dilithium, SPHINCS+). NSA CNSA 2.0 mandates quantum-resistant algorithms for national security systems by 2030. DoD Zero Trust Architecture Strategy requires continuous verification that classical cryptography cannot sustain. This is not speculative — it is a compliance deadline with a known horizon.
+
+| Item | Description | Status | Dependencies |
+|---|---|---|---|
+| K8sX-QEG Integration | Post-quantum Kubernetes security fabric as compute substrate for all governance operations | Not Started | Phase III attestation layer |
+| Q-OPA Policy Engine | Quantum-extended OPA/Rego enforcement at OSI Layer 3 — cryptographically tamper-proof policy decisions | Not Started | K8sX-QEG |
+| PQC Audit Chain | CRYSTALS-Kyber / CRYSTALS-Dilithium signed audit logs — immutable records that survive quantum decryption | Not Started | Phase II audit log architecture |
+| AQ-KRAE | Autonomous Quantum Key Rotation and Attestation Engine — continuous key lifecycle without human intervention | Not Started | Q-OPA + K8sX-QEG |
+| QFEN Integration | Quantum Federated Edge Network — extends governance controls to edge deployments outside central cloud | Not Started | Phase III agentic controls |
+| cATO Quantum Extension | Extend continuous ATO workflow to include PQC compliance gates — compress quantum migration from years to weeks | Not Started | Phase IV policy engine |
+| DoD / FedRAMP PQC Alignment | Map all Phase IV controls to NIST SP 800-208, CNSA 2.0, and DoD Zero Trust Architecture requirements | Not Started | CSA + DoD engagement |
+
+**Phase IV Exit Criteria:**
+- All governance cryptography is NIST PQC standard compliant
+- Audit chain cryptographically survives quantum decryption attempts
+- cATO quantum migration timeline documented and validated against FedRAMP High baseline
+- DoD alignment pathway established through CSA standards contribution
+
+---
+
+## Risks and Dependencies
+
+| Risk | Severity | Mitigation |
+|---|---|---|
+| Phase III requires Phase II RBAC production-grade before attestation can begin | High | Approval workflows and role separation are Phase II P0 items — Phase III does not start until these ship |
+| CSA STAR for AI certification timeline is an external dependency | Medium | ~80% of compliance layer is internally developed — platform work proceeds ahead of formal certification publication |
+| PQC library maturity (Phase IV) | Low | CRYSTALS-Kyber and Dilithium are NIST-finalized; integration complexity is known, algorithm instability is not a risk |
+| Defense procurement cycle length (Phase IV DoD alignment) | High | Patent portfolio and CSA contributions establish prior art and standards credibility — these are the procurement entry points, not cold outreach |
+| Architecture concentration risk (Phases III–IV) | High | Published framework, patent filings, and CSA deliverables are the knowledge transfer and IP protection mechanism |
+
+---
+
+## About This Roadmap
+
+AEGIS-X was not built to be a dashboard. It was built to be the governance infrastructure layer that autonomous compute systems require but the industry has not yet delivered.
+
+Phase II is the product management entry point — the governance dashboard that makes the platform visible and usable to compliance stakeholders today. Phases III and IV are the architectural destination: a cryptographically sound, quantum-resistant, continuously attesting governance fabric for autonomous AI systems operating in regulated and defense environments.
+
+The market will arrive at this destination. The only variable is whether organizations arrive on infrastructure they controlled from the beginning, or infrastructure they had to adopt reactively under regulatory pressure.
+
+---
+
+*Built by James A. Bex — AI Architect, Governance Leader, CSA STAR for AI Working Group Contributor*  
+*Platform: AEGIS-X — Autonomous Governance Architecture*  
+*Repository: [github.com/ArchitectJamesABex/AEGIS-X-Governance-Dashboard](https://github.com/ArchitectJamesABex/AEGIS-X-Governance-Dashboard)*  
+*Live Demo: [aegis-x-governance-dashboard.vercel.app](https://aegis-x-governance-dashboard.vercel.app)*
