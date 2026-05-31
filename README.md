@@ -1,7 +1,7 @@
 AEGIS-X Governance Dashboard
 Quantum-Safe AI Governance Runtime for Defense and Regulated Enterprise
 
-🔐 Live PoC: aegis-x-governance-dashboard.vercel.app
+🔐 Live PoC: https://aegis-x-governance-dashboard.vercel.app/overview  
 
 The Problem: Why AI Governance Keeps Failing
 Most organizations approach AI governance backwards. They build tools that react to compliance violations after they happen—logging events, surfacing risk dashboards, generating audit reports. By then, the damage is done.
