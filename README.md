@@ -45,28 +45,8 @@ Nothing here is connected to live infrastructure. Replace the mock data layer wi
 Architecture Overview
 AEGIS-X sits at the interface layer of a comprehensive governance ecosystem:
 
-sh
+https://docs.google.com/presentation/d/1AU-cif3BSo0F-L8FxIdiaYtrODL_xy6-Sx3kCV075PE/edit?slide=id.g3eb79152882_0_22#slide=id.g3eb79152882_0_22 
 
-Copy
-┌────────────────────────────────────────────────────────────────┐
-│         AEGIS-X Governance Dashboard (this repository)         │
-│       React 19 | Recharts | jsPDF | Tailwind | Vite            │
-├────────────────────────────────────────────────────────────────┤
-│                   API Contract Layer (/api)                     │
-│            Client-Backend Integration Interface                │
-├──────────────────┬──────────────────┬──────────────────────────┤
-│  Policy Engine   │ Compliance Layer │ Quantum Security Layer   │
-│  ─────────────   │ ──────────────── │ ───────────────────────  │
-│  OPA / Rego      │ STAR CAR-D       │ PQC Signing & Verification
-│  Real-time eval  │ EU AI Act        │ Immutable Audit Logging │
-│  Governance      │ FedRAMP          │ Quantum-Resistant       │
-│  Enforcement     │ NIST AI RMF      │ Chain of Custody        │
-├──────────────────┴──────────────────┴──────────────────────────┤
-│           cATO Orchestration Fabric                             │
-│         K8sX-QEG | QFEN | Q-OPA | Governance Runtime          │
-├────────────────────────────────────────────────────────────────┤
-│           GEN-SHIELD DevSecOps Integration Pipeline            │
-└────────────────────────────────────────────────────────────────┘
 Lower-layer components (Policy Engine, Compliance Layer, Quantum Security, cATO Orchestration, GEN-SHIELD) are active development components. This repository represents the governance visualization interface and API contracts that connect to those systems.
 
 Integration Architecture
