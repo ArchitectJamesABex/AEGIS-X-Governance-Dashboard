@@ -3,15 +3,31 @@ Quantum-Safe AI Governance Runtime for Defense and Regulated Enterprise
 
 🔐 Live PoC: https://aegis-x-governance-dashboard.vercel.app/overview  
 
+This repository is a functional proof of concept. All data displayed is simulated mock data. The dashboard is designed to be connected to a client's existing backend infrastructure — it is not a standalone production system. See Integration for architecture details.
+
+What this demonstrates
+AEGIS-X is a reference implementation for a quantum-safe AI governance enforcement platform — the frontend and API interface layer of a larger governance ecosystem. This PoC visualizes what real-time policy enforcement, continuous compliance monitoring, and quantum-resistant audit infrastructure look like when operationalized at the enterprise level.
+
+It is the byproduct of a full governance roadmap that spans AI policy enforcement, post-quantum cryptographic controls, continuous ATO orchestration, and CSA STAR for AI compliance automation — all designed to hook into an organization's existing backend systems rather than replace them.
+
 The Problem: Why AI Governance Keeps Failing
 Most organizations approach AI governance backwards. They build tools that react to compliance violations after they happen—logging events, surfacing risk dashboards, generating audit reports. By then, the damage is done.
 
-Meanwhile, three critical governance problems remain unsolved:
+What problem the full platform solves
+Most AI governance tools do one of three things: log what happened, surface risk on a dashboard, or generate compliance documentation. None enforce policy in real time. None are built for the cryptographic threat landscape that quantum computing introduces. None connect governance enforcement to the actual ATO and compliance lifecycle that federal and defense organizations require.
+The AEGIS-X platform architecture — of which this PoC is the interface layer — addresses all three simultaneously.
 
-Policy isn't enforced in real time. Violations are detected retroactively through logging and forensics, not prevented at the infrastructure layer.
-Quantum threats aren't addressed. Enterprise cryptographic controls assume classical computing will remain dominant. They won't survive the quantum transition.
-Governance doesn't connect to ATO lifecycle. Compliance artifacts and policy enforcement exist in separate systems—preventing continuous Authority to Operate orchestration that federal and defense organizations require.
-AEGIS-X solves all three simultaneously.
+This PoC demonstrates
+
+Real-time governance dashboard interface for AI policy enforcement visibility
+Compliance status monitoring across EU AI Act, FedRAMP, and NIST AI RMF control domains
+Audit log visualization with quantum-resistant signing indicators
+cATO (continuous Authorization to Operate) status and timeline tracking interface
+Policy enforcement event feed with OPA/Rego policy reference
+Recharts-powered compliance metrics and trend visualization
+PDF export of governance reports via jsPDF
+
+All panels are populated with structured mock data representing realistic enterprise governance scenarios. No live backend is connected in this public deployment.
 
 What AEGIS-X Does
 AEGIS-X is a reference implementation for an infrastructure-enforced AI governance platform that:
