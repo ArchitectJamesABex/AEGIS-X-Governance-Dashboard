@@ -1,10 +1,13 @@
 AEGIS-X Cloud Posture Dashboard
 Product Manager Trainee Assignment — Option 1
-Candidate: James A. Bex
-Role: AI Architect & Governance Leader
-Platform: AEGIS-X — Autonomous Governance Architecture
+Direct Hire Candidate: James A. Bex
+Role: Product Manager Trainee
+Futuring Proofing Platform: AEGIS-X — Autonomous Governance Architecture
 Repo: AEGIS-X Governance Dashboard
 Live Demo: aegis-x-governance-dashboard.vercel.app
+June 1st 2026 Resume: https://docs.google.com/document/d/1cdqy02-e4LDoX6BJKxR7BGLrl-ohaeNRoWhZfe4SiFA/edit?tab=t.0
+Runtime Action Mgt. Platform Proven-Track Record at a High-Level:https://docs.google.com/presentation/d/1VJau4zjO-xbnJKin_j3KDEZsC7CBoUN-uRwNe-3Bz5g/edit?slide=id.g3ec858e25b0_0_19#slide=id.g3ec858e25b0_0_19
+DoD PoC: https://docs.google.com/presentation/d/1eh_L_VeEK5ANJbr_FEhpG9TVIERdkfbX/edit?slide=id.p5#slide=id.p5
 
 Submission Index
 DeliverableLocationFull write-up (Problem Statement + Features + Metrics + Dev Items)AEGIS-X_PM_Submission_v2.docxScreen 1 — Posture overview wireframewireframes/screen-1-posture-overview.pngScreen 2 — Findings table wireframewireframes/screen-2-findings-table.pngScreen 3 — Remediation panel wireframewireframes/screen-3-remediation-panel.png3-minute walkthrough videoGoogle Drive link — see below
