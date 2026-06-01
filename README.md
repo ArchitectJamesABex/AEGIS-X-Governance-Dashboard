@@ -1,7 +1,12 @@
 AEGIS-X Governance Dashboard
 Quantum-Safe AI Governance Runtime for Defense and Regulated Enterprise
 
-🔐 Live PoC: https://aegis-x-governance-dashboard.vercel.app/overview  
+Live PoC: https://aegis-x-governance-dashboard.vercel.app/overview 
+
+DefensePoc:https://docs.google.com/presentation/d/1eh_L_VeEK5ANJbr_FEhpG9TVIERdkfbX/edit?usp=sharing&ouid=110470948865407727602&rtpof=true&sd=true
+
+Roadmap:https://docs.google.com/presentation/d/1ShNa4WFwNxXukprHhowbx-9hpxUN5MhZQZ33-YS2yaI/edit?slide=id.g3ec86a147be_0_30#slide=id.g3ec86a147be_0_30 
+
 
 This repository is a functional proof of concept. All data displayed is simulated mock data. The dashboard is designed to be connected to a client's existing backend infrastructure — it is not a standalone production system. See Integration for architecture details.
 
