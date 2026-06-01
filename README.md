@@ -188,7 +188,7 @@ Live Application: aegis-x-governance-dashboard.vercel.app
 Real-Time Roadmap:
 https://docs.google.com/presentation/d/1ShNa4WFwNxXukprHhowbx-9hpxUN5MhZQZ33-YS2yaI/edit?slide=id.g3ec86a147be_0_30#slide=id.g3ec86a147be_0_30
 
-Professional Background Contex:
+Professional Background Context:
 DefensePoc:https://docs.google.com/presentation/d/1eh_L_VeEK5ANJbr_FEhpG9TVIERdkfbX/edit?usp=sharing&ouid=110470948865407727602&rtpof=true&sd=true 
 
 12. Roadmap (Next 90 Days)
