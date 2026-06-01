@@ -61,12 +61,8 @@ Nothing here is connected to live infrastructure. Replace the mock data layer wi
 
 Architecture Overview
 AEGIS-X sits at the interface layer of a comprehensive governance ecosystem:
-
-DefensePoc:https://docs.google.com/presentation/d/1eh_L_VeEK5ANJbr_FEhpG9TVIERdkfbX/edit?usp=sharing&ouid=110470948865407727602&rtpof=true&sd=true
-
-Roadmap:https://docs.google.com/presentation/d/1ShNa4WFwNxXukprHhowbx-9hpxUN5MhZQZ33-YS2yaI/edit?slide=id.g3ec86a147be_0_30#slide=id.g3ec86a147be_0_30 
-
-https://docs.google.com/presentation/d/1AU-cif3BSo0F-L8FxIdiaYtrODL_xy6-Sx3kCV075PE/edit?slide=id.g3eb79152882_0_22#slide=id.g3eb79152882_0_22 
+https://docs.google.com/presentation/d/1AU-cif3BSo0F-L8FxIdiaYtrODL_xy6-Sx3kCV075PE/edit?slide=id.g3eb79152882_0_22#slide=id.g3eb79152882_0_22
+ 
 
 Lower-layer components (Policy Engine, Compliance Layer, Quantum Security, cATO Orchestration, GEN-SHIELD) are active development components. This repository represents the governance visualization interface and API contracts that connect to those systems.
 
@@ -188,13 +184,20 @@ npm run dev
 Video Explanation: [(https://drive.google.com/file/d/1XgO20dE5hxpjB_YQ1XZ86B5tKTXAmgsX/view?usp=sharing)]
 PM Assignment Documents: See /pm-assignment/ for user flows, PRD, and research notes.
 Live Application: aegis-x-governance-dashboard.vercel.app
-11. Roadmap (Next 90 Days)
+
+Real-Time Roadmap:
+https://docs.google.com/presentation/d/1ShNa4WFwNxXukprHhowbx-9hpxUN5MhZQZ33-YS2yaI/edit?slide=id.g3ec86a147be_0_30#slide=id.g3ec86a147be_0_30
+
+Professional Background Contex:
+DefensePoc:https://docs.google.com/presentation/d/1eh_L_VeEK5ANJbr_FEhpG9TVIERdkfbX/edit?usp=sharing&ouid=110470948865407727602&rtpof=true&sd=true 
+
+12. Roadmap (Next 90 Days)
  Approval Workflows: Submit → Review → Approve model deployment
  RBAC & Audit Logging: Role-based access for Elena, Marcus, and Sarah personas
  Integrations: Jira, ServiceNow, and MLflow webhook connectors
  Real-time Alerts: Slack / Teams notifications when risk score crosses threshold
  Explainability Module: Auto-generate SHAP/LIME summary cards per model
-12. About This Project
+13. About This Project
 This dashboard was built as a Product Management Trainee Assignment to demonstrate:
 
 End-to-end product thinking (problem → hypothesis → execution)
